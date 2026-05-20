@@ -23,7 +23,7 @@
 - **Parent chain:** (none) or `de.edeka`
 
 ### Sample evidence
-- **Sample file(s):** `profiles/<country>/<merchant>/samples/<YYYY-MM-DD>-<location>.txt`
+- **Sample file(s):** `merchants/<country>/<merchant>/samples/<YYYY-MM-DD>-<location>.txt`
 - **ZIP region:** ...
 - **Pattern classes triggered:**
   - [ ] simple_item
@@ -41,7 +41,7 @@
 - [ ] No personal phone numbers
 
 ### Test evidence
-- **Test fixture:** `profiles/<country>/<merchant>/tests/parse_test*.yaml`
+- **Test fixture:** `merchants/<country>/<merchant>/tests/parse_test*.yaml`
 - **Local pytest result:** All `N` tests pass ✅
 - **Totals reconciliation:** grand_total matches computed_total ✅
 

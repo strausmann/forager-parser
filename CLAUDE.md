@@ -18,13 +18,13 @@ proposed via PRs rather than buried in user complaints.
 **Three things to know up front:**
 
 1. **Profiles are data, not code.** The interesting design decisions live in
-   `profiles/<country>/<merchant>/profile.yaml` and `variants/*.yaml`. The Python
+   `merchants/<country>/<merchant>/profile.yaml` and `variants/*.yaml`. The Python
    code in `src/forager_parser/` is a stable, mostly-finished engine that consumes
    these profiles. When something doesn't parse correctly, suspect the profile
    first, the code second.
 
 2. **Every change MUST be backed by a test on a real (anonymized) receipt.** No
-   speculative changes. The fixture format is in `profiles/<merchant>/tests/parse_test*.yaml`
+   speculative changes. The fixture format is in `merchants/<merchant>/tests/parse_test*.yaml`
    and the runner is `tests/test_parser.py`. If you change the parser engine, the
    complete test suite must remain green — no regressions tolerated.
 
@@ -76,7 +76,7 @@ on fixing.
 
 ### Rule 2: Live-test against real receipts, always
 
-The `profiles/<merchant>/samples/` directory contains real (anonymized) receipts.
+The `merchants/<merchant>/samples/` directory contains real (anonymized) receipts.
 Any meaningful change to the parser or a profile must be verified against these
 samples. The minimum verification flow is:
 
@@ -168,8 +168,8 @@ reason and breaking them invalidates all existing fixtures.
 
 1. User uploads a sample receipt (PDF or image, possibly OCR'd already)
 2. Anonymize the text following Rule 6
-3. Save as `profiles/<country>/<slug>/samples/<YYYY-MM-DD>-<location-slug>.txt`
-4. Create `profiles/<country>/<slug>/profile.yaml` based on observation
+3. Save as `merchants/<country>/<slug>/samples/<YYYY-MM-DD>-<location-slug>.txt`
+4. Create `merchants/<country>/<slug>/profile.yaml` based on observation
    - Pick a `merchant_id` (e.g. `de.rossmann`)
    - Declare `tax_classes` from the printed tax breakdown
    - Write `header_patterns` for `detection`
@@ -177,7 +177,7 @@ reason and breaking them invalidates all existing fixtures.
    - Test in isolation: `forager-parser parse <sample>` shows uncovered lines
    - Iterate: add patterns until uncovered_lines is empty
 5. Run `pytest tests/test_schema.py` to confirm the profile is schema-valid
-6. Write `profiles/<country>/<slug>/tests/parse_test.yaml` with expected fields
+6. Write `merchants/<country>/<slug>/tests/parse_test.yaml` with expected fields
 7. Run `pytest tests/` — must be green
 8. Commit. The commit message should follow Conventional Commits:
    `feat(profiles): add de.rossmann based on Hamburg sample`
@@ -191,7 +191,7 @@ Use a variant when **same merchant_id, different layout** — e.g. REWE oHG
 prints something different.
 
 1. Identify the discriminator: UID range? ZIP region? Header marker?
-2. Create `profiles/<merchant>/variants/<descriptor>.yaml`:
+2. Create `merchants/<merchant>/variants/<descriptor>.yaml`:
    ```yaml
    schema_version: 1
    extends: de.rewe

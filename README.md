@@ -38,9 +38,10 @@ Several existing receipt parsers are good for one of these things, none for all:
 - None have a community-PR workflow that turns reality drift into structured
   pull requests.
 
-This one tries to. The technical core: YAML profiles per merchant, with
-inheritance for regional/store-format variants. The community core: every
-contribution comes with an anonymized real sample and a test fixture.
+This one tries to. The technical core: YAML profiles per merchant, stored
+under `merchants/<country>/<merchant>/`, with inheritance for regional/
+store-format variants. The community core: every contribution comes with an
+anonymized real sample and a test fixture.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add merchants.
 
@@ -79,7 +80,7 @@ More to come — see CONTRIBUTING.md to add yours.
 ```
 forager-parser/
 ├── src/forager_parser/   # parser engine
-├── profiles/             # merchant profile YAML files
+├── merchants/            # merchant profile YAML files
 │   └── de/<merchant>/
 │       ├── profile.yaml      # base profile
 │       ├── variants/         # optional regional/legal-form variants
