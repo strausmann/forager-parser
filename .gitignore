@@ -1,2 +1,8 @@
 testdata
 !testdata/.gitkeep
+merchants/*/*/samples/
+__pycache__/
+*.py[cod]
+build/
+dist/
+*.egg-info/

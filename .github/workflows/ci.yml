@@ -31,7 +31,7 @@ jobs:
           pip install jsonschema
 
       - name: Run full test suite
-        run: pytest tests/ -v
+        run: make test
 
   pii-check:
     name: PII detection in sample receipts
@@ -44,12 +44,12 @@ jobs:
         run: |
           set -e
           # 16 consecutive digits — likely an unredacted card number
-          if grep -rEn '[0-9]{16}' profiles/*/samples/ 2>/dev/null; then
+          if grep -rEn '[0-9]{16}' merchants/*/*/samples/ 2>/dev/null; then
             echo "::error::Found 16-digit pattern in samples. Anonymize with ############XXXX."
             exit 1
           fi
           # 4-4-4-4 spaced card numbers
-          if grep -rEn '\b[0-9]{4}[\s-]+[0-9]{4}[\s-]+[0-9]{4}[\s-]+[0-9]{4}\b' profiles/*/samples/ 2>/dev/null; then
+          if grep -rEn '\b[0-9]{4}[\s-]+[0-9]{4}[\s-]+[0-9]{4}[\s-]+[0-9]{4}\b' merchants/*/*/samples/ 2>/dev/null; then
             echo "::error::Found spaced 4-4-4-4 digit pattern in samples."
             exit 1
           fi
@@ -68,7 +68,7 @@ jobs:
       - name: Lint YAML files
         run: |
           yamllint -d "{extends: relaxed, rules: {line-length: disable}}" \
-            profiles/ schema/ .github/ || true
+            merchants/ schema/ .github/ || true
           # Soft-fail for now; harden later
 
   regex-compile:
@@ -92,7 +92,7 @@ jobs:
           python -c "
           from forager_parser.profile import load_all_profiles
           from pathlib import Path
-          bundles = load_all_profiles(Path('profiles'))
+          bundles = load_all_profiles(Path('merchants'))
           print(f'Loaded {len(bundles)} base profiles')
           for mid, b in bundles.items():
               total_patterns = (len(b.base.item_patterns) +
