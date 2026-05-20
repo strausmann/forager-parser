@@ -1,0 +1,115 @@
+schema_version: 1
+merchant:
+  id: de.rewe
+  name: REWE
+  country: DE
+  brand_variants:
+    - "REWE"
+    - "REWE Markt"
+    - "REWE MARKT"
+
+detection:
+  header_patterns:
+    - regex: '(?im)^\s*REWE\s+MARKT\s*$'
+      confidence: 0.9
+    - regex: '(?i)REWE\s+Markt\s+GmbH'
+      confidence: 1.0
+    - regex: '(?i)www\.rewe\.de'
+      confidence: 0.85
+    - regex: '(?im)^\s*R\s*E\s*W\s*E\s*$'    # selbständige REWE-Märkte (z.B. "Jens Piclum oHG")
+      confidence: 0.85
+    - regex: '(?i)REWE\s+\S+\s+oHG'
+      confidence: 0.9
+  minimum_score: 0.7
+
+tax_classes:
+  A:
+    rate: 0.19
+    description: "19% MwSt"
+  B:
+    rate: 0.07
+    description: "7% MwSt"
+
+item_patterns:
+  - id: rewe_weight_item
+    kind: weight_item
+    primary: '^(?P<name>[A-ZÄÖÜ][A-ZÄÖÜ0-9./\-,!&\s]{0,29}?)\s{2,}(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+    secondary: '^\s+(?P<weight>\d+,\d{3})\s*kg\s*x\s+(?P<price_per_kg>\d+,\d{2})\s*EUR/kg\s*$'
+    requires_secondary: true
+
+  - id: rewe_handeingabe_weight_item
+    kind: weight_item
+    # Item-Zeile mit "Handeingabe E-Bon X,XXX kg" als Sekundärzeile (kein x EUR/kg-Detail)
+    primary: '^(?P<name>[A-ZÄÖÜ][A-ZÄÖÜ0-9./\-,!&\s]{0,29}?)\s{2,}(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+    secondary: '^\s+Handeingabe\s+E-Bon\s+(?P<weight>\d+,\d{3})\s*kg\s*$'
+    requires_secondary: true
+
+  - id: rewe_quantity_item
+    kind: quantity_item
+    primary: '^(?P<name>[A-ZÄÖÜ0-9][A-ZÄÖÜ0-9./\-,!%&\s]{0,29}?)\s{2,}(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+    secondary: '^\s+(?P<qty>\d+)\s+Stk\s+x\s+(?P<unit_price>\d+,\d{2})\s*$'
+    requires_secondary: true
+
+  - id: rewe_simple_item
+    kind: item
+    # erlaubt jetzt: führende Ziffer (9 BAG.BROETCHEN), Ampersand (S&F)
+    primary: '^(?P<name>[A-ZÄÖÜ0-9][A-ZÄÖÜ0-9./\-,!%&\s]{0,29}?)\s{2,}(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+    requires_secondary: false
+
+pfand_patterns:
+  - id: rewe_pfand_child
+    kind: pfand_einweg
+    regex: '^\s+PFAND\s+(EINWEG|MEHRWEG)\s+(?P<amount>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+    attach_to: previous_item
+
+  - id: rewe_pfand_eur_marker
+    kind: pfand_einweg
+    # Format wie 'PFAND 0,25 EURO  0,25 A *' — flach, mit Sternchen
+    regex: '^PFAND\s+\d+,\d{2}\s+EURO\s+(?P<amount>\d+,\d{2})\s+(?P<tax_class>[AB])\s*\*?\s*$'
+    attach_to: previous_item
+    flags: [not_rebate_eligible]
+
+  - id: rewe_leergut_einweg
+    kind: pfand_return
+    # Format: 'LEERGUT EINWEG  -2,00 A *' + 'N Stk x 0,25' Sekundär
+    regex: '^LEERGUT\s+EINWEG\s+(?P<total>-\d+,\d{2})\s+(?P<tax_class>[AB])\s*\*?\s*$'
+    secondary: '^\s+(?P<qty>\d+)\s+Stk\s+x\s+(?P<unit_amount>\d+,\d{2})\s*$'
+    attach_to: none
+    flags: [not_rebate_eligible]
+
+discount_patterns:
+  - id: rewe_frischerabatt
+    kind: discount
+    # Format: '   1 x Frischerabatt   -0,69 B'
+    regex: '^\s+(?P<qty>\d+)\s+x\s+(?P<name>Frischerabatt|Rabatt|Aktionsrabatt)\s+(?P<total>-\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+    attach_to: previous_item
+
+date_extraction:
+  - description: "Kundenbeleg-Block"
+    regex: 'Datum:\s+(?P<date>\d{2}\.\d{2}\.\d{4})'
+    date_format: "%d.%m.%Y"
+    time_regex: 'Uhrzeit:\s+(?P<time>\d{2}:\d{2}:\d{2})'
+    time_format: "%H:%M:%S"
+
+store_extraction:
+  address_line:
+    # erlaubt jetzt verschiedene Straßennamen (nicht nur Schulstraße)
+    regex: '^\s*(?P<street>(?:[A-ZÄÖÜa-zäöüß][A-Za-zäöüÄÖÜß-]*(?:straße|weg|allee|boulevard|platz|gasse|ring|damm|chaussee)\s+\d+[a-z]?(?:-\d+)?))\s*$'
+  city_line:
+    regex: '^\s*(?P<zip>\d{5})\s+(?P<city>[A-ZÄÖÜ][a-zäöüß-]+(?:\s[A-ZÄÖÜ][a-zäöüß-]+)?)\s*$'
+  store_id:
+    regex: 'Markt:(?P<store_id>\d{4})'
+
+totals:
+  grand_total: '^\s*SUMME\s+EUR\s+(?P<amount>\d+,\d{2})\s*$'
+  payment: '^\s*Geg\.\s+(?P<method>Mastercard|Visa|EC-Cash|Bargeld|Maestro|Girocard)\s+EUR\s+(?P<amount>\d+,\d{2})\s*$'
+
+tax_breakdown:
+  table_header: 'Steuer\s+%\s+Netto\s+Steuer\s+Brutto'
+  row_regex: '^\s+(?P<class>[AB])=\s*(?P<rate>\d+,\d+)%\s+-?(?P<net>\d+,\d{2})\s+-?(?P<tax>\d+,\d{2})\s+-?(?P<gross>\d+,\d{2})\s*$'
+
+loyalty:
+  program: "REWE Bonus"
+  earned_cashback: 'Mit diesem Einkauf hast du\s+(?P<amount>\d+,\d{2})\s+EUR\s+REWE Bonus-Guthaben'
+  coupon: '^\s+(?P<value>\d+,\d{2})EUR\s+auf\s+(?P<target>.+?)\s+(?P<face_value>\d+,\d{2})\s+EUR\s*$'
+  balance: 'Aktuelles Bonus-Guthaben:\s+(?P<balance>\d+,\d{2})\s+EUR'

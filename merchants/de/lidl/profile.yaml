@@ -1,0 +1,83 @@
+schema_version: 1
+merchant:
+  id: de.lidl
+  name: Lidl
+  country: DE
+  brand_variants:
+    - "LIDL"
+    - "Lidl"
+
+detection:
+  header_patterns:
+    - regex: '(?im)^\s*LIDL\s*$'
+      confidence: 0.9
+    - regex: '(?i)www\.lidl\.de'
+      confidence: 0.95
+    - regex: '0800\s*5435\s*7587'
+      confidence: 0.9
+  minimum_score: 0.7
+
+tax_classes:
+  A:
+    rate: 0.07
+    description: "7% MwSt"
+  B:
+    rate: 0.19
+    description: "19% MwSt"
+
+item_patterns:
+  - id: lidl_weight_item
+    kind: weight_item
+    primary: '^(?P<name>[A-ZÄÖÜa-zäöü][A-ZÄÖÜa-zäöü\s]{0,20}?)\s+kg\s+(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+    secondary: '^\s+(?P<weight>\d+,\d{3})\s*kg\s*x\s*(?P<price_per_kg>\d+,\d{2})\s+EUR/kg\s*$'
+    requires_secondary: true
+    name_post_strip: ['\s+kg$']
+
+  - id: lidl_inline_quantity_item
+    kind: quantity_item
+    primary: '^(?P<name>[A-ZÄÖÜa-zäöü][A-ZÄÖÜa-zäöü0-9./\-,\s%]{0,20}?)\s+(?P<unit_price>\d+,\d{2})\s+x\s+(?P<qty>\d+)\s+(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+    requires_secondary: false
+
+  - id: lidl_simple_item
+    kind: item
+    primary: '^(?P<name>[A-ZÄÖÜa-zäöü][A-ZÄÖÜa-zäöü0-9./\-,\s%]{0,29}?)\s{2,}(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+    requires_secondary: false
+
+pfand_patterns:
+  - id: lidl_pfand_aggregate
+    kind: pfand_aggregate
+    regex: '^Pfand\s+(?P<unit_amount>\d+,\d{2})\s+(?P<pfand_type>EM|MW)\s+\d+,\d{2}\s+x\s+(?P<qty>\d+)\s+(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+    attach_to: none
+
+  - id: lidl_pfand_return
+    kind: pfand_return
+    regex: '^Pfandr[üu]ckgabe\s+(?P<total>-\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+    secondary: '^\s+-?(?P<qty>\d+)\s+x\s+(?P<unit_amount>\d+,\d{2})\s*$'
+    attach_to: none
+
+date_extraction:
+  - description: "Trailer-Inline"
+    regex: '^\d{4}\s+\d+/\d+\s+(?P<date>\d{2}\.\d{2}\.\d{2})\s+(?P<time>\d{2}:\d{2})\s*$'
+    date_format: "%d.%m.%y"
+    time_format: "%H:%M"
+
+  - description: "Zahlungsbeleg-Block"
+    regex: '^(?P<date>\d{2}\.\d{2}\.\d{4})\s+(?P<time>\d{2}:\d{2})\s+T-ID'
+    date_format: "%d.%m.%Y"
+    time_format: "%H:%M"
+
+store_extraction:
+  address_line:
+    regex: '^\s*(?P<street>Heibensweg\s+\d+)\s*$'
+  city_line:
+    regex: '^\s*(?P<zip>\d{5})\s+(?P<city>[A-ZÄÖÜ][a-zäöüß-]+)\s*$'
+  store_id:
+    regex: '^(?P<store_id>\d{4})\s+\d+/\d+\s+\d{2}\.\d{2}\.\d{2}'
+
+totals:
+  grand_total: '^Zu zahlen\s+(?P<amount>\d+,\d{2})\s*$'
+  payment: '^(?P<method>Kreditkarte|EC-Cash|Bargeld|MasterCard|Visa|Maestro)\s+(?P<amount>\d+,\d{2})\s*$'
+
+tax_breakdown:
+  table_header: 'MWST%\s+MWST\s+\+\s+Netto\s+=\s+Brutto'
+  row_regex: '^\s*(?P<class>[AB])\s+(?P<rate>\d+)\s*%\s+(?P<tax>\d+,\d{2})\s+(?P<net>\d+,\d{2})\s+(?P<gross>\d+,\d{2})\s*$'

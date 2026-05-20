@@ -1,0 +1,73 @@
+test_id: lidl_seevetal_2026_05_19
+sample: ../samples/2026-05-19-seevetal.txt
+profile: de.lidl
+
+expected:
+  merchant:
+    identified: true
+    merchant_id: de.lidl
+  store:
+    street: Heibensweg 3
+    zip: "21220"
+    store_id: "5417"
+  purchase_datetime:
+    date_only: "2026-05-19"
+    time_only: "08:23"
+  totals:
+    grand_total: "26.90"
+    totals_match: true
+  payment:
+    method: Kreditkarte
+    amount: "26.90"
+  tax_breakdown:
+    - class_code: A
+      rate: 0.07
+    - class_code: B
+      rate: 0.19
+  lines:
+    # Wiegeartikel
+    - parsed_name: Erdbeeren
+      parsed_quantity: "0.448"
+      parsed_unit: kg
+      parsed_unit_price: "4.98"
+      parsed_total: "2.23"
+      parsed_tax_class: A
+      line_kind: item
+      flags_contain: [weight_item]
+    # einfache items
+    - parsed_name: Bioland D.Müsli Scho
+      parsed_total: "3.29"
+      line_kind: item
+    # inline-quantity
+    - parsed_name: Milk/Schoko Bits
+      parsed_quantity: "2"
+      parsed_unit_price: "2.79"
+      parsed_total: "5.58"
+      parsed_tax_class: A
+      line_kind: item
+      flags_contain: [quantity_inline]
+    - parsed_name: Mineralwasser medium
+      parsed_quantity: "24"
+      parsed_unit_price: "0.29"
+      parsed_total: "6.96"
+      parsed_tax_class: B
+      line_kind: item
+    # Pfand-Aggregat
+    - parsed_total: "6.00"
+      parsed_tax_class: B
+      line_kind: pfand_aggregate
+    - parsed_name: Corny Schoko
+      parsed_total: "2.39"
+      line_kind: item
+    - parsed_name: Toilettenpap.4-lagig
+      parsed_total: "4.45"
+      line_kind: item
+    # zwei Pfandrückgaben
+    - parsed_total: "-0.25"
+      parsed_tax_class: A
+      line_kind: pfand_return
+    - parsed_total: "-3.75"
+      parsed_tax_class: B
+      line_kind: pfand_return
+      parsed_quantity: "15"
+      parsed_unit_price: "0.25"

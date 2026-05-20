@@ -1,0 +1,69 @@
+test_id: dm_hamburg_fischbek_2025_01_25
+sample: ../samples/2025-01-25-hamburg-fischbek.txt
+profile: de.dm
+
+expected:
+  merchant:
+    identified: true
+    merchant_id: de.dm
+  store:
+    street: Im Fischbeker Heidbrook 2c
+    zip: "21149"
+    city: Hamburg
+    store_id: "7422"
+  purchase_datetime:
+    date_only: "2025-01-25"
+    time_only: "10:28"
+  totals:
+    grand_total: "45.29"
+    computed_total: "45.29"
+    totals_match: true
+  payment:
+    method: KARTENZAHLUNG
+  tax_breakdown:
+    - class_code: "1"
+      rate: 0.19
+      gross: "45.29"
+      net: "38.06"
+      tax: "7.23"
+  lines:
+    # einfache Items
+    - parsed_name: Saugstark&Si KüchentüDesign3lg
+      parsed_total: "3.45"
+      parsed_tax_class: "1"
+      line_kind: item
+    # Vöslauer + Einwegpfand (geht jetzt dank + im Charset)
+    - parsed_name: Vöslauer Limo. Oran.+0,25Pfand
+      parsed_total: "1.15"
+      line_kind: item
+    - parsed_total: "0.25"
+      parsed_tax_class: "1"
+      line_kind: pfand_einweg
+      flags_contain: [not_rebate_eligible]
+    # zweites Vöslauer mit € im Namen
+    - parsed_name: Vöslauer Limo Himb.+0,25€Pfand
+      parsed_total: "1.15"
+      line_kind: item
+    - parsed_total: "0.25"
+      line_kind: pfand_einweg
+    # Inline-Quantity-Prefix
+    - parsed_name: Signal ZB Kinder ultra
+      parsed_quantity: "2"
+      parsed_unit_price: "2.25"
+      parsed_total: "4.50"
+      line_kind: item
+      flags_contain: [quantity_inline]
+    # Bio-Tasche als Mehrwegpfand
+    - parsed_name: Bio-Tasche Baumwolle Pfand
+      parsed_total: "2.00"
+      line_kind: pfand_mehrweg
+      flags_contain: [not_rebate_eligible]
+    # Coupon
+    - parsed_name: 10%
+      parsed_total: "-4.76"
+      line_kind: discount
+  loyalty:
+    program: PAYBACK
+    has_earned_points: true
+    earned_points: 21
+    has_balance_info: true

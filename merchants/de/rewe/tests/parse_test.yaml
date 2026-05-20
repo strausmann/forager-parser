@@ -1,0 +1,105 @@
+test_id: rewe_maschen_2026_05_20
+sample: ../samples/2026-05-20-maschen.txt
+profile: de.rewe
+
+expected:
+  merchant:
+    identified: true
+    merchant_id: de.rewe
+  store:
+    street: Schulstraße 46-48
+    zip: "21220"
+    city: Maschen
+    uid_number: DE812706034
+    store_id: "0803"
+  purchase_datetime:
+    date_only: "2026-05-20"
+    time_only: "14:22:48"
+  totals:
+    grand_total: "32.84"
+    computed_total: "32.84"
+    totals_match: true
+    item_count_observed: 16
+  payment:
+    method: Mastercard
+    amount: "32.84"
+  tax_breakdown:
+    - class_code: B
+      rate: 0.07
+      net: "30.69"
+      tax: "2.15"
+      gross: "32.84"
+  lines:
+    # einfache Items
+    - parsed_name: MINI SALAMI 4ER
+      parsed_total: "0.99"
+      parsed_tax_class: B
+      line_kind: item
+    - parsed_name: JA! GOUDA JUNG
+      parsed_total: "2.45"
+      line_kind: item
+    - parsed_name: DINKELSCHNITTE
+      parsed_total: "1.99"
+      line_kind: item
+    # Wiegeartikel
+    - parsed_name: ERDBEERE
+      parsed_quantity: "0.490"
+      parsed_unit: kg
+      parsed_unit_price: "5.58"
+      parsed_total: "2.73"
+      parsed_tax_class: B
+      line_kind: item
+      flags_contain: [weight_item]
+    - parsed_name: KAROTTE BIO
+      parsed_total: "2.99"
+      line_kind: item
+    - parsed_name: SUPPENGRUEN
+      parsed_total: "1.99"
+      line_kind: item
+    - parsed_name: SALATGURKE
+      parsed_total: "0.65"
+      line_kind: item
+    # 2. Wiegeartikel
+    - parsed_name: PAPRIKA GELB
+      parsed_quantity: "0.528"
+      parsed_unit: kg
+      parsed_unit_price: "5.99"
+      parsed_total: "3.16"
+      line_kind: item
+      flags_contain: [weight_item]
+    - parsed_name: STREICHGUT UNGES
+      parsed_total: "1.05"
+      line_kind: item
+    # Mengen-Item
+    - parsed_name: ESL MILCH 3,5%
+      parsed_quantity: "2"
+      parsed_unit: Stk
+      parsed_unit_price: "0.95"
+      parsed_total: "1.90"
+      line_kind: item
+      flags_contain: [quantity_multiline]
+    - parsed_name: NATURJOGHURT 3,5
+      parsed_total: "0.89"
+      line_kind: item
+    - parsed_name: JOGH GRIECH. ART
+      parsed_total: "2.29"
+      line_kind: item
+    - parsed_name: FLEISCHKLOESSCHE
+      parsed_total: "3.19"
+      line_kind: item
+    - parsed_name: BIG CITY SALAMI
+      parsed_total: "3.69"
+      line_kind: item
+    - parsed_name: MUSCHELN
+      parsed_total: "1.49"
+      line_kind: item
+    - parsed_name: HITSCHL.SCHNUERE
+      parsed_total: "1.39"
+      line_kind: item
+  loyalty:
+    program: REWE Bonus
+    has_earned_cashback: true
+    earned_cashback_amount: "0.35"
+    has_balance_info: true
+    balance_eur: "36.95"
+  warnings_count_max: 0

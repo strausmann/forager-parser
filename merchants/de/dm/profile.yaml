@@ -1,0 +1,102 @@
+schema_version: 1
+merchant:
+  id: de.dm
+  name: dm-drogerie markt
+  country: DE
+  brand_variants:
+    - "dm-drogerie markt"
+    - "dm"
+
+detection:
+  header_patterns:
+    - regex: '(?i)dm-drogerie\s+markt'
+      confidence: 1.0
+    - regex: '(?i)Öffnungszeiten\s+auf\s+dm\.de'
+      confidence: 0.9
+    - regex: '(?i)Steuer-Nr\.:34092/30007'    # dm zentrale Steuernummer
+      confidence: 0.95
+  minimum_score: 0.7
+
+# Bei dm: Tax-Klasse als ZIFFER, nicht Buchstabe.
+# 1 = 19% (Standard, Drogerie/Haushalt)
+# 2 = 7% (Lebensmittel, z.B. Babynahrung, Tampons)
+tax_classes:
+  "1":
+    rate: 0.19
+    description: "19% MwSt - Drogerie/Haushalt"
+  "2":
+    rate: 0.07
+    description: "7% MwSt - Lebensmittel"
+
+item_patterns:
+  - id: dm_inline_quantity_prefix
+    kind: quantity_item
+    # Format: '2x 2,25 Signal ZB Kinder ultra   4,50 1'
+    #         qty x unit_price name  total tax
+    primary: '^(?P<qty>\d+)x\s+(?P<unit_price>\d+,\d{2})\s+(?P<name>[A-Za-zÄÖÜäöüß0-9][A-Za-zÄÖÜäöüß0-9./\-,!&+€:;\s]{0,29}?)\s{2,}(?P<total>\d+,\d{2})\s+(?P<tax_class>[12])\s*$'
+    requires_secondary: false
+
+  - id: dm_simple_item
+    kind: item
+    # Format: 'Frosch Spülmaschinen-Tabs 70St   9,45 1'
+    # Erlaubt: Buchstaben (groß/klein/Umlaute inkl. ß), Ziffern, .&-,!+€:; und Leerzeichen
+    primary: '^(?P<name>[A-Za-zÄÖÜäöüß0-9][A-Za-zÄÖÜäöüß0-9./\-,!&+€:;\s]{0,33}?)\s{2,}(?P<total>\d+,\d{2})\s+(?P<tax_class>[12])\s*$'
+    requires_secondary: false
+
+pfand_patterns:
+  - id: dm_einwegpfand
+    kind: pfand_einweg
+    # Format: 'Einwegpfand   0,25 §1' — § = nicht rabattberechtigt
+    regex: '^Einwegpfand\s+(?P<amount>\d+,\d{2})\s+§(?P<tax_class>[12])\s*$'
+    attach_to: previous_item
+    flags: [not_rebate_eligible]
+
+  - id: dm_biotasche_pfand
+    kind: pfand_mehrweg
+    # Format: 'Bio-Tasche Baumwolle Pfand   2,00 §1'
+    regex: '^(?P<name>Bio-Tasche\s+\S+\s+Pfand)\s+(?P<amount>\d+,\d{2})\s+§(?P<tax_class>[12])\s*$'
+    attach_to: none
+    flags: [not_rebate_eligible]
+
+discount_patterns:
+  - id: dm_coupon
+    kind: discount
+    # Format: 'Coupon 10%   -4,76' — keine Tax-Klasse direkt am Ende!
+    # Discount wirkt zwischen Zwischensumme und Summe
+    regex: '^Coupon\s+(?P<name>\d+%|\S+)\s+(?P<total>-\d+,\d{2})\s*$'
+    attach_to: none
+
+date_extraction:
+  - description: "Header-Zeile mit Datum+Uhrzeit"
+    # Format: '25.01.2025  10:28  D4C7/1  237538/8   7422'
+    regex: '^(?P<date>\d{2}\.\d{2}\.\d{4})\s+(?P<time>\d{2}:\d{2})\s+\S+/\d+\s+\d+/\d+'
+    date_format: "%d.%m.%Y"
+    time_format: "%H:%M"
+
+store_extraction:
+  address_line:
+    # dm hat mehrspaltigen Header, Adresszeile ist üblicherweise mit viel Whitespace eingerückt.
+    # Strategie: 'Wort(e) Hausnummer[Buchstabe]' am Zeilenende mit führendem Whitespace
+    # Erlaubt: Mehrwort-Straßen, Bindestrich-Namen, Heidbrook/Ufer/Platz, Hausnummer mit Suffix
+    regex: '^\s+(?P<street>[A-ZÄÖÜ][A-Za-zÄÖÜäöüß.-]+(?:\s+[A-ZÄÖÜa-zäöüß][A-Za-zÄÖÜäöüß.-]+)*\s+\d+\s*[a-z]?(?:[-\s]\d+\s*[a-z]?)?)\s*$'
+  city_line:
+    regex: '^\s+(?P<zip>\d{5})\s+(?P<city>[A-ZÄÖÜ][a-zäöüß-]+(?:\s[A-ZÄÖÜ][a-zäöüß-]+)?)\s*$'
+  store_id:
+    # Letzte Spalte der Header-Zeile: '... 237538/8   7422' → 7422 ist Filial-ID
+    regex: '^\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}\s+\S+/\d+\s+\d+/\d+\s+(?P<store_id>\d{4})'
+
+totals:
+  grand_total: '^SUMME\s+EUR\s+(?P<amount>\d+,\d{2})\s*$'
+  # Payment kann sein: 'KARTENZAHLUNG EUR  -45,29' oder 'VISA EUR  -81,05'
+  payment: '^(?P<method>KARTENZAHLUNG|VISA|Mastercard|EC-Cash|Bargeld|Maestro|Girocard)\s+EUR\s+-?(?P<amount>\d+,\d{2})\s*$'
+  subtotal: '^Zwischensumme\s+(?P<amount>\d+,\d{2})\s*$'
+
+tax_breakdown:
+  table_header: 'MwSt-Satz\s+Brutto\s+Netto\s+MwSt'
+  row_regex: '^(?P<class>[12])=(?P<rate>\d+,\d{2})%\s+(?P<gross>\d+,\d{2})\s+(?P<net>\d+,\d{2})\s+(?P<tax>\d+,\d{2})\s*$'
+
+loyalty:
+  program: "PAYBACK"
+  earned_points: 'Basis-Punkte\s+(?P<points>\d+)°P'
+  balance_points: 'Punktestand vor Einkauf:\s+(?P<points>[\d.]+)'
+  balance_eur: 'Dieser Punktestand entspricht:\s+(?P<balance>\d+,\d{2})\s+EUR'

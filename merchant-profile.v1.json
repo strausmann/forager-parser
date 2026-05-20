@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forager.strausmann.cloud/schema/merchant-profile.v1.json",
+  "title": "Forager Merchant Profile v1",
+  "description": "Schema for forager-merchants profile YAML files. Validates both base profiles and variants (which include 'extends' and 'applies_to').",
+  "type": "object",
+  "required": ["schema_version"],
+
+  "properties": {
+    "schema_version": {
+      "description": "Profile schema version. Currently only 1 is supported.",
+      "oneOf": [
+        {"type": "integer", "const": 1},
+        {"type": "string", "const": "1"}
+      ]
+    },
+
+    "extends": {
+      "description": "If present, this is a VARIANT extending the named base merchant_id.",
+      "type": "string",
+      "pattern": "^[a-z]{2,3}\\.[a-z0-9_-]+$"
+    },
+
+    "variant_id": {
+      "description": "Unique identifier for this variant. Required when 'extends' is set.",
+      "type": "string",
+      "pattern": "^[a-z]{2,3}\\.[a-z0-9_.-]+$"
+    },
+
+    "applies_to": {
+      "description": "Conditions under which this variant applies. All conditions are AND-combined. Required when 'extends' is set.",
+      "type": "object",
+      "properties": {
+        "zip_regex": {"type": "string"},
+        "uid_regex": {"type": "string"},
+        "header_marker_regex": {"type": "string"},
+        "header_marker": {
+          "type": "string",
+          "description": "Alias for header_marker_regex (deprecated)"
+        },
+        "store_id_regex": {"type": "string"},
+        "cities": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "valid_from": {"type": "string", "format": "date"},
+        "valid_until": {"type": "string", "format": "date"}
+      },
+      "additionalProperties": false
+    },
+
+    "merchant": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}\\.[a-z0-9_-]+$",
+          "description": "Stable merchant identifier, e.g. 'de.rewe'"
+        },
+        "name": {"type": "string", "minLength": 1},
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "ISO 3166-1 alpha-2"
+        },
+        "parent_chain": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z]{2,3}\\.[a-z0-9_-]+$",
+          "description": "For sub-brands, the parent merchant_id"
+        },
+        "brand_variants": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Alternative names this merchant prints on receipts"
+        }
+      }
+    },
+
+    "detection": {
+      "type": "object",
+      "properties": {
+        "header_patterns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["regex", "confidence"],
+            "properties": {
+              "regex": {"type": "string"},
+              "confidence": {"type": "number", "minimum": 0.0, "maximum": 1.0}
+            },
+            "additionalProperties": false
+          }
+        },
+        "minimum_score": {"type": "number", "minimum": 0.0, "maximum": 5.0}
+      }
+    },
+
+    "tax_classes": {
+      "type": "object",
+      "description": "Per-merchant mapping of class codes (A/B/1/2/...) to VAT rates. NEVER assume a global default — always declare here.",
+      "patternProperties": {
+        "^[A-Za-z0-9()]{1,5}$": {
+          "type": "object",
+          "required": ["rate"],
+          "properties": {
+            "rate": {"type": "number", "minimum": 0.0, "maximum": 0.30},
+            "description": {"type": "string"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "item_patterns": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/pattern_block"}
+    },
+
+    "pfand_patterns": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/special_pattern_block"}
+    },
+
+    "discount_patterns": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/special_pattern_block"}
+    },
+
+    "date_extraction": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["regex", "date_format"],
+        "properties": {
+          "description": {"type": "string"},
+          "regex": {"type": "string"},
+          "date_format": {"type": "string"},
+          "time_regex": {"type": "string"},
+          "time_format": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+
+    "store_extraction": {
+      "type": "object",
+      "properties": {
+        "address_line": {"$ref": "#/$defs/regex_block"},
+        "city_line": {"$ref": "#/$defs/regex_block"},
+        "store_id": {"$ref": "#/$defs/regex_block"}
+      },
+      "additionalProperties": false
+    },
+
+    "totals": {
+      "type": "object",
+      "properties": {
+        "grand_total": {"type": "string"},
+        "payment": {"type": "string"},
+        "subtotal": {"type": "string"},
+        "item_count": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+
+    "tax_breakdown": {
+      "type": "object",
+      "properties": {
+        "table_header": {"type": "string"},
+        "row_regex": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+
+    "loyalty": {
+      "type": "object",
+      "properties": {
+        "program": {"type": "string"},
+        "earned_cashback": {"type": "string"},
+        "earned_points": {"type": "string"},
+        "eligible_amount": {"type": "string"},
+        "coupon": {"type": "string"},
+        "balance": {"type": "string"},
+        "balance_eur": {"type": "string"},
+        "balance_points": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+
+  "$defs": {
+    "pattern_block": {
+      "type": "object",
+      "required": ["id", "kind", "primary"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Pattern identifier, snake_case"
+        },
+        "kind": {
+          "enum": ["item", "quantity_item", "weight_item"]
+        },
+        "primary": {"type": "string"},
+        "secondary": {"type": "string"},
+        "requires_secondary": {"type": "boolean"},
+        "name_post_strip": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "special_pattern_block": {
+      "type": "object",
+      "required": ["id", "regex"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "kind": {
+          "enum": [
+            "pfand_einweg", "pfand_mehrweg", "pfand_aggregate",
+            "pfand_return", "discount", "coupon"
+          ]
+        },
+        "regex": {"type": "string"},
+        "secondary": {"type": "string"},
+        "attach_to": {"enum": ["previous_item", "none"]},
+        "flags": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "not_rebate_eligible",
+              "weight_item",
+              "quantity_inline",
+              "quantity_multiline",
+              "multi_line_raw",
+              "returned_deposit",
+              "negative_amount",
+              "currency_symbol_inline",
+              "has_brand_prefix"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "regex_block": {
+      "type": "object",
+      "required": ["regex"],
+      "properties": {
+        "regex": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+
+  "allOf": [
+    {
+      "description": "Base profile (no 'extends'): merchant.id/name/country are required",
+      "if": {
+        "not": {"required": ["extends"]}
+      },
+      "then": {
+        "required": ["merchant"],
+        "properties": {
+          "merchant": {
+            "required": ["id", "name", "country"]
+          }
+        }
+      }
+    },
+    {
+      "description": "Variant (has 'extends'): variant_id + applies_to required",
+      "if": {"required": ["extends"]},
+      "then": {
+        "required": ["extends", "variant_id", "applies_to"]
+      }
+    }
+  ]
+}
