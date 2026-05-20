@@ -6,13 +6,14 @@ from pathlib import Path
 from forager_parser.detector import detect_merchant
 from forager_parser.profile import load_all_profiles
 
-PROFILES_DIR = Path(__file__).parent.parent / "profiles"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+MERCHANTS_DIR = REPO_ROOT / "merchants"
 
 
 def test_variant_selected_for_ohg_bon():
     """Hamburg-Überseequartier-Bon (REWE Jens Piclum oHG) → must resolve to variant."""
-    bundles = load_all_profiles(PROFILES_DIR)
-    text = (PROFILES_DIR / "de/rewe/samples/2026-03-21-hamburg-ueberseequartier.txt").read_text()
+    bundles = load_all_profiles(MERCHANTS_DIR)
+    text = (MERCHANTS_DIR / "de/rewe/samples/2026-03-21-hamburg-ueberseequartier.txt").read_text()
     result = detect_merchant(text, bundles)
     assert result.profile is not None
     assert result.profile.merchant_id == "de.rewe"
@@ -23,8 +24,8 @@ def test_variant_selected_for_ohg_bon():
 
 def test_base_selected_for_regular_rewe_bon():
     """Maschen-Bon (REWE Markt GmbH, normale UID) → must stay on base."""
-    bundles = load_all_profiles(PROFILES_DIR)
-    text = (PROFILES_DIR / "de/rewe/samples/2026-05-20-maschen.txt").read_text()
+    bundles = load_all_profiles(MERCHANTS_DIR)
+    text = (MERCHANTS_DIR / "de/rewe/samples/2026-05-20-maschen.txt").read_text()
     result = detect_merchant(text, bundles)
     assert result.profile is not None
     assert result.profile.merchant_id == "de.rewe"
@@ -34,7 +35,7 @@ def test_base_selected_for_regular_rewe_bon():
 
 def test_brand_variant_inherited_correctly():
     """Variant inherits all base fields but adds its own brand_variants."""
-    bundles = load_all_profiles(PROFILES_DIR)
+    bundles = load_all_profiles(MERCHANTS_DIR)
     bundle = bundles["de.rewe"]
 
     base = bundle.base
@@ -50,6 +51,6 @@ def test_brand_variant_inherited_correctly():
 
 def test_other_merchants_have_no_variants():
     """dm, lidl, knolles haben aktuell keine Variants."""
-    bundles = load_all_profiles(PROFILES_DIR)
+    bundles = load_all_profiles(MERCHANTS_DIR)
     for mid in ("de.dm", "de.lidl", "de.knolles-markt"):
         assert len(bundles[mid].variants) == 0

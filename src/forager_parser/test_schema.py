@@ -1,5 +1,5 @@
 """
-Validate that all profile.yaml and variant YAMLs in profiles/ conform to
+Validate that all profile.yaml and variant YAMLs in merchants/ conform to
 schema/merchant-profile.v1.json.
 """
 import json
@@ -9,13 +9,13 @@ import pytest
 import yaml
 from jsonschema import Draft202012Validator, ValidationError
 
-REPO_ROOT = Path(__file__).parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_PATH = REPO_ROOT / "schema" / "merchant-profile.v1.json"
-PROFILES_DIR = REPO_ROOT / "profiles"
+PROFILES_DIR = REPO_ROOT / "merchants"
 
 
 def _all_profile_files():
-    """Find all profile.yaml + variants/*.yaml under profiles/."""
+    """Find all profile.yaml + variants/*.yaml under merchants/."""
     files = []
     for p in PROFILES_DIR.rglob("profile.yaml"):
         files.append(p)

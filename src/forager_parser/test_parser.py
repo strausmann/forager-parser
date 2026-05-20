@@ -24,12 +24,13 @@ import yaml
 from forager_parser.parser import parse
 from forager_parser.profile import load_all_profiles
 
-PROFILES_DIR = Path(__file__).parent.parent / "profiles"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+MERCHANTS_DIR = REPO_ROOT / "merchants"
 
 
 def _find_test_files() -> list[Path]:
     files = []
-    for p in PROFILES_DIR.rglob("tests/parse_test*.yaml"):
+    for p in MERCHANTS_DIR.rglob("tests/parse_test*.yaml"):
         files.append(p)
     return sorted(files)
 
@@ -47,7 +48,7 @@ def _resolve_sample(test: dict[str, Any]) -> Path:
 
 @pytest.fixture(scope="module")
 def bundles():
-    return load_all_profiles(PROFILES_DIR)
+    return load_all_profiles(MERCHANTS_DIR)
 
 
 def _find_profile(bundles, profile_id):

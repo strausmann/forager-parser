@@ -14,7 +14,7 @@ from .parser import parse
 from .profile import load_all_profiles, load_profile
 from .verifier import verify_with_claude
 
-DEFAULT_PROFILES_DIR = Path(__file__).parent.parent.parent / "profiles"
+DEFAULT_PROFILES_DIR = Path(__file__).parent.parent.parent / "merchants"
 
 
 @click.group()
