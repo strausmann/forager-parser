@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://forager.strausmann.cloud/schema/merchant-profile.v1.json",
+  "$id": "https://strausmann.github.io/forager-parser/schema/merchant-profile.v1.json",
   "title": "Forager Merchant Profile v1",
   "description": "Schema for forager-merchants profile YAML files. Validates both base profiles and variants (which include 'extends' and 'applies_to').",
   "type": "object",

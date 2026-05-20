@@ -71,25 +71,25 @@ out — an under-anonymized commit is worse than an over-anonymized one.
 
 ```bash
 # 1. Create the directory structure
-mkdir -p profiles/de/<merchant-slug>/{samples,tests}
+mkdir -p merchants/de/<merchant-slug>/{samples,tests}
 
 # 2. Drop an anonymized sample receipt as plain text
 # Naming: <YYYY-MM-DD>-<short-location-slug>.txt
-$EDITOR profiles/de/<merchant-slug>/samples/2026-01-15-hamburg.txt
+$EDITOR merchants/de/<merchant-slug>/samples/2026-01-15-hamburg.txt
 
 # 3. Write a profile.yaml
-$EDITOR profiles/de/<merchant-slug>/profile.yaml
+$EDITOR merchants/de/<merchant-slug>/profile.yaml
 
 # 4. Test detection
-forager-parser detect profiles/de/<merchant-slug>/samples/2026-01-15-hamburg.txt
+forager-parser detect merchants/de/<merchant-slug>/samples/2026-01-15-hamburg.txt
 # Expected: 'Top-Kandidat: de.<slug>'
 
 # 5. Test parsing
-forager-parser parse profiles/de/<merchant-slug>/samples/2026-01-15-hamburg.txt | jq .
+forager-parser parse merchants/de/<merchant-slug>/samples/2026-01-15-hamburg.txt | jq .
 # Inspect: are all items parsed? does grand_total match computed_total?
 
 # 6. Write the test fixture
-$EDITOR profiles/de/<merchant-slug>/tests/parse_test.yaml
+$EDITOR merchants/de/<merchant-slug>/tests/parse_test.yaml
 
 # 7. Run the full test suite
 pytest
@@ -97,10 +97,13 @@ pytest
 
 ### Profile YAML structure
 
-See [profiles/de/dm/profile.yaml](profiles/de/dm/profile.yaml) for a minimal,
+See [merchants/de/dm/profile.yaml](merchants/de/dm/profile.yaml) for a minimal,
 well-commented example. The full schema is at
 [schema/merchant-profile.v1.json](schema/merchant-profile.v1.json) and is
 enforced by CI.
+
+Canonical hosted URL:
+https://strausmann.github.io/forager-parser/schema/merchant-profile.v1.json
 
 Required blocks:
 - `schema_version: 1`
@@ -152,7 +155,7 @@ a structural discriminator: legal form (oHG vs. GmbH-Eigenbetrieb), region,
 store cluster, or time era.
 
 ```yaml
-# profiles/de/rewe/variants/ohg-piclum.yaml
+# merchants/de/rewe/variants/ohg-piclum.yaml
 schema_version: 1
 extends: de.rewe
 variant_id: de.rewe.ohg-piclum
@@ -178,7 +181,7 @@ Resolution rules:
 If you find a receipt that doesn't parse correctly, the smallest useful PR is:
 
 1. Add the problematic receipt as a new sample under
-   `profiles/<merchant>/samples/<YYYY-MM-DD>-<location>.txt`
+  `merchants/<merchant>/samples/<YYYY-MM-DD>-<location>.txt`
 2. Run the parser against it; observe what fails
 3. Adjust the relevant pattern in `profile.yaml` (most often a regex)
 4. Re-run; confirm it now parses correctly
@@ -194,8 +197,8 @@ If you find a receipt that doesn't parse correctly, the smallest useful PR is:
 Use Conventional Commits format:
 
 ```
-feat(profiles): add de.rossmann based on Hamburg sample
-fix(profiles/rewe): handle items with leading digit '9 BAG.BROETCHEN'
+feat(merchants): add de.rossmann based on Hamburg sample
+fix(merchants/rewe): handle items with leading digit '9 BAG.BROETCHEN'
 feat(parser): add discount_patterns block
 docs(contributing): clarify anonymization rules
 ```
