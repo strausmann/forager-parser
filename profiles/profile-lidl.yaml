@@ -1,0 +1,221 @@
+# merchants/de/lidl/profile.yaml
+#
+# Lidl Filiale — Profil v1
+# Getestet gegen: Heibensweg 3, 21220 Seevetal-Maschen, Bon vom 19.05.2026
+# Layout-Variante: 2026-payback (Lidl Plus-Integration)
+#
+schema_version: 1
+
+merchant:
+  id: de.lidl
+  name: Lidl
+  country: DE
+  brand_variants:
+    - "LIDL"
+    - "Lidl"
+  
+  detection:
+    header_patterns:
+      - regex: '(?im)^\s*L\s?I\s?D\s?L\s*$'   # Logo wird oft mit Leerzeichen ge-OCRt
+        confidence: 0.85
+      - regex: '(?i)www\.lidl\.de'
+        confidence: 0.95
+      - regex: '(?i)0800\s*5435\s*7587'         # Service-Nummer als sehr starker Indikator
+        confidence: 0.9
+    minimum_score: 0.7
+
+tax_classes:
+  A:
+    rate: 0.07
+    description: "7% MwSt (Lebensmittel)"
+  B:
+    rate: 0.19
+    description: "19% MwSt (Standard, Non-Food, Getränke)"
+  # WICHTIG: Bei Lidl ist die Konvention umgekehrt zu REWE
+  # A = 7% (Lebensmittel), B = 19% — siehe MWST-Block im Bon
+
+layout:
+  sections:
+    - id: header
+      until_marker: '^\s*EUR\s*$'
+      contains: [merchant_name, address]
+    - id: items
+      from_marker: '^\s*EUR\s*$'
+      until_marker: '^[-]{20,}\s*$'
+      multiline: true
+    - id: totals
+      from_marker: '^[-]{20,}\s*$'
+      until_marker: '^\s*MWST%'
+    - id: tax_breakdown
+      from_marker: '^\s*MWST%'
+      until_marker: '^\s*TSE'
+    - id: tse_block
+      from_marker: '^\s*TSE\s*Transaktionsnummer'
+      until_marker: '^\s*K-U-N-D-E-N-B-E-L-E-G'
+    - id: payment
+      from_marker: '^\s*K-U-N-D-E-N-B-E-L-E-G'
+      until_marker: '^\s*\*\*\s+Zahlung erfolgt'
+    - id: footer
+      from_marker: '^\s*\*\*\s+Zahlung erfolgt'
+      until_marker: '$'
+  
+  item_layout:
+    # Primärmuster: einzeilige Items mit Mixed-Case-Namen
+    # Format: <Name (Mixed-Case)> <Betrag> <Tax>
+    # Beispiel: 'Bioland D.Müsli Scho                3,29 A'
+    primary_pattern: |
+      ^(?P<name>[A-ZÄÖÜa-zäöü][A-ZÄÖÜa-zäöü0-9./\-,\s%]{1,29}?)\s{2,}(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$
+    
+    multiline_patterns:
+      
+      - id: lidl_weight_item
+        description: "Wiegeartikel: Name+'kg' + Total in Zeile 1, kg-Detail in Zeile 2"
+        # Bei Lidl steht die Gewichtseinheit ('kg') OFT als Teil des Namens
+        primary: '^(?P<name>[A-ZÄÖÜa-zäöü][A-ZÄÖÜa-zäöü\s]{1,20})\s+kg\s+(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+        secondary: '^\s+(?P<weight>\d+,\d{3})\s*kg\s*x\s*(?P<price_per_kg>\d+,\d{2})\s+EUR/kg\s*$'
+        result_kind: weight_item
+        total_in_line: primary
+        # Erkennen: bei "Erdbeeren kg" ist 'Erdbeeren' der echte Produktname
+        name_post_strip: ['\s+kg$']
+      
+      - id: lidl_inline_quantity_item
+        description: "Mengenartikel ALLES in einer Zeile: <name> <einzelpreis> x <anzahl> <total> <tax>"
+        # Beispiel: 'Milk/Schoko Bits    2,79 x  2     5,58 A'
+        primary: '^(?P<name>[A-ZÄÖÜa-zäöü][A-ZÄÖÜa-zäöü0-9./\-,\s%]{1,20}?)\s+(?P<unit_price>\d+,\d{2})\s+x\s+(?P<qty>\d+)\s+(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+        result_kind: quantity_item
+        single_line: true   # Markiert: kein Sekundär-Pattern erwartet
+  
+  # Pfand bei Lidl — drei verschiedene Varianten!
+  pfand:
+    detection:
+      
+      # Variante 1: Pfand als eigenständige Aggregat-Zeile
+      # Beispiel: 'Pfand 0,25 EM    0,25 x 24    6,00 B'
+      - id: lidl_pfand_aggregate
+        regex: '^Pfand\s+(?P<unit_amount>\d+,\d{2})\s*(?P<pfand_type>EM|MW)\s+\d+,\d{2}\s+x\s+(?P<qty>\d+)\s+(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+        kind: pfand_einweg_aggregate
+        attach_to: previous_item_group   # an die letzte Mengen-Item-Zeile vor sich
+      
+      # Variante 2: Klassische einzeilige Pfand-Zeile (REWE-Style — kommt bei Lidl seltener vor)
+      - id: lidl_pfand_single
+        regex: '^\s+Pfand\s+(?P<amount>\d+,\d{2})\s+[AB]\s*$'
+        kind: pfand_einweg
+        attach_to: previous_item
+      
+      # Variante 3: Pfandrückgabe (negative Position)
+      # Beispiel: 'Pfandrückgabe                   -3,75 B'
+      #          '  -15 x                  0,25'
+      - id: lidl_pfand_return
+        regex: '^Pfandr[üu]ckgabe\s+(?P<total>-\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+        secondary_regex: '^\s+(?P<qty>-?\d+)\s+x\s+(?P<unit_amount>\d+,\d{2})\s*$'
+        kind: pfand_return
+        attach_to: none   # eigenständige Position
+        negate_amount: true   # Vorzeichen behalten
+  
+  date_extraction:
+    patterns:
+      # Variante 1: Trailer-Zeile mit Datum/Uhrzeit/Kassen-Info
+      # Beispiel: '5417   023002/81              19.05.26 08:23'
+      - description: "Trailer mit Kassennummer/Filiale/Datum"
+        regex: '^\d{4}\s+\d+/\d+\s+(?P<date>\d{2}\.\d{2}\.\d{2})\s+(?P<time>\d{2}:\d{2})\s*$'
+        date_format: "%d.%m.%y"
+        time_format: "%H:%M"
+        section: tse_block
+      
+      # Variante 2: Zahlungsbeleg-Block
+      # Beispiel: '19.05.2026    08:26   T-ID 60199093'
+      - description: "Im Zahlungsbeleg-Block"
+        regex: '^(?P<date>\d{2}\.\d{2}\.\d{4})\s+(?P<time>\d{2}:\d{2})\s+T-ID'
+        date_format: "%d.%m.%Y"
+        time_format: "%H:%M"
+        section: payment
+      
+      # Variante 3: TSE-Timestamp (ISO 8601, Fallback)
+      - description: "Fallback: TSE-Signatur-Zeitstempel"
+        regex: '(?P<datetime>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)'
+        datetime_format: "%Y-%m-%dT%H:%M:%S.%fZ"
+        section: tse_block
+        timezone: "UTC"
+  
+  store_extraction:
+    patterns:
+      - description: "Adresszeile direkt unter dem Logo"
+        regex: '^\s+(?P<street>\S[\S ]+?)\s*$'
+        position: header_line_1
+      - description: "PLZ und Ort"
+        regex: '^\s+(?P<zip>\d{5})\s+(?P<city>\S[\S ]+?)\s*$'
+        position: header_line_2
+      - description: "Filial-/Kassennummer aus Trailer"
+        regex: '^(?P<store_id>\d{4})\s+\d+/\d+\s+\d{2}\.\d{2}\.\d{2}'
+        section: tse_block
+  
+  totals:
+    grand_total:
+      regex: '^\s*Zu zahlen\s+(?P<amount>\d+,\d{2})\s*$'
+    
+    payment_method:
+      regex: '^\s*(?P<method>Kreditkarte|EC-Cash|Bargeld|MasterCard|Visa|Maestro)\s+(?P<amount>\d+,\d{2})\s*$'
+    
+    tax_breakdown:
+      # Lidl-Format:
+      # 'MWST%      MWST    +   Netto  =   Brutto'
+      # 'A  7 %     0,87       12,37      13,24'
+      # 'B 19 %     2,18       11,48      13,66'
+      # 'Summe      3,05       23,85      26,90'
+      table_header: 'MWST%\s+MWST\s+\+\s+Netto\s+=\s+Brutto'
+      row_regex: '^\s*(?P<class>[AB])\s+(?P<rate>\d+)\s*%\s+(?P<tax>\d+,\d{2})\s+(?P<net>\d+,\d{2})\s+(?P<gross>\d+,\d{2})\s*$'
+      totals_row_regex: '^\s*Summe\s+(?P<tax>\d+,\d{2})\s+(?P<net>\d+,\d{2})\s+(?P<gross>\d+,\d{2})\s*$'
+
+# Lidl Plus (Lidl-Bonusprogramm) — im Beispiel-Bon nicht aktiv
+# Reservierte Felder für Zukunft
+loyalty:
+  program: "Lidl Plus"
+  detection:
+    - regex: 'LIDL\s*Plus|Lidl\s*Plus'
+  # Detail-Patterns ergänzen, wenn ein Beispiel-Bon mit Lidl Plus vorliegt
+
+normalization:
+  max_name_length: 30
+  
+  abbreviations:
+    "D.Müsli Scho": "Dinkel-Müsli Schoko"
+    "D.Müsli":      "Dinkel-Müsli"
+    "Milk/Schoko Bits": "Milch-Schoko-Bits"
+    "Mineralwasser medium": "Mineralwasser medium"
+    "Corny Schoko": "Corny Schoko"
+    "Toilettenpap.4-lagig": "Toilettenpapier 4-lagig"
+    "Erdbeeren":    "Erdbeeren"
+    "Bioland":      "Bioland"
+  
+  brand_hints:
+    "Bioland":  "Bioland"
+    "Milbona":  "Milbona"        # Lidl-Eigenmarke Molkerei
+    "Freeway":  "Freeway"        # Lidl-Cola
+    "Combino":  "Combino"        # Lidl-Pasta
+    "Solevita": "Solevita"       # Lidl-Säfte
+
+confidence_thresholds:
+  parse_min: 0.7
+  header_detection: 0.7
+  item_extraction: 0.75
+
+default_routing:
+  primary: grocy
+  hardware_signals:
+    # Lidl hat Aktionsware (Parkside-Werkzeuge etc.) → Hardware-Routing möglich
+    - "PARKSIDE"
+    - "PLEM"      # Parkside-Laserentfernungsmesser
+    - "PKLL"      # Parkside-Kreuzlinienlaser
+    - "BOHRER"
+    - "AKKU"
+    - "LADEGER"
+  override_per_line: true
+
+layout_signatures:
+  expected_markers:
+    - 'K-U-D-E-N-B-E-L-E-G|K-U-N-D-E-N-B-E-L-E-G'
+    - 'TSE Transaktionsnummer:'
+    - 'Signaturzähler:'
+    - 'UST-ID-NR: DE\d{9}'
+  alternative_markers:
+    - 'Kundenbeleg \(SHA-256\)'   # alte Kundenbeleg-Variante

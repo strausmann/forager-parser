@@ -1,0 +1,17 @@
+# Variant: REWE Jens Piclum oHG (Westfield Hamburg - Überseequartier)
+# Beispiel für einen selbständigen REWE-Markt mit eigener UID.
+# Erbt vom Basis-Profil de.rewe; überschreibt nur brand_variants und detection-confidence.
+schema_version: 1
+extends: de.rewe
+variant_id: de.rewe.ohg-piclum
+
+applies_to:
+  # Strenger UID-Match: nur dieser eine Markt
+  uid_regex: 'DE369701276'
+  # Plus zusätzlich: Header enthält 'oHG' nach 'REWE' (mehrere Wörter dazwischen erlaubt)
+  header_marker_regex: '(?i)REWE\s+[^\n]+?\s+oHG'
+
+merchant:
+  brand_variants:
+    - "REWE Jens Piclum oHG"
+    - "REWE oHG"

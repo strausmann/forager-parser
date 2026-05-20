@@ -1,0 +1,52 @@
+test_id: rewe_neu_wulmstorf_2026_04_25
+sample: ../samples/2026-04-25-neu-wulmstorf.txt
+profile: de.rewe
+
+expected:
+  merchant:
+    identified: true
+    merchant_id: de.rewe
+  store:
+    street: Bahnhofstraße 65
+    zip: "21629"
+    city: Neu Wulmstorf
+    uid_number: DE812706034
+    store_id: "0605"
+  purchase_datetime:
+    date_only: "2026-04-25"
+    time_only: "11:57:02"
+  totals:
+    grand_total: "99.64"
+    computed_total: "99.64"
+    totals_match: true
+  lines:
+    # Item gefolgt von Frischerabatt
+    - parsed_name: STAUDENSEL.BIO
+      parsed_total: "2.29"
+      line_kind: item
+    - parsed_name: Frischerabatt
+      parsed_total: "-0.69"
+      parsed_tax_class: B
+      line_kind: discount
+    # Handeingabe-Wiegeartikel
+    - parsed_name: RD-HACKFLEISCH
+      parsed_quantity: "1.005"
+      parsed_unit: kg
+      parsed_total: "17.99"
+      line_kind: item
+      flags_contain: [weight_item]
+    # PFAND 0,25 EURO mit Sternchen
+    - parsed_name: ORANGENSAFT M.F.
+      parsed_total: "2.59"
+      parsed_tax_class: A
+      line_kind: item
+    - parsed_total: "0.25"
+      parsed_tax_class: A
+      line_kind: pfand_einweg
+      flags_contain: [not_rebate_eligible]
+    # Leergut-Rückgabe
+    - parsed_total: "-4.25"
+      parsed_tax_class: A
+      line_kind: pfand_return
+      parsed_quantity: "17"
+      parsed_unit_price: "0.25"

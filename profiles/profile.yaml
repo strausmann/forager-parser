@@ -1,0 +1,75 @@
+schema_version: 1
+merchant:
+  id: de.knolles-markt
+  name: Knolles Markt OHG
+  country: DE
+  parent_chain: de.edeka
+  brand_variants:
+    - "Knolles Markt OHG"
+    - "Knolles Markt"
+
+detection:
+  header_patterns:
+    - regex: '(?i)Knolles\s+Markt\s+OHG'
+      confidence: 1.0
+    - regex: '(?i)Ohlendorfer\s+Str\.?\s+3'
+      confidence: 0.85
+    - regex: 'Tel\.\s+04185-2300'
+      confidence: 0.9
+  minimum_score: 0.7
+
+tax_classes:
+  A:
+    rate: 0.07
+    description: "7% MwSt"
+  B:
+    rate: 0.19
+    description: "19% MwSt"
+
+item_patterns:
+  - id: knolles_inline_quantity_eur
+    kind: quantity_item
+    primary: '^(?P<name>[A-Za-zÄÖÜäöü0-9][A-Za-zÄÖÜäöü0-9./\-,&\s]{0,20}?)\s+(?P<unit_price>\d+,\d{2})\s+€\s+x\s+(?P<qty>\d+)\s+(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+    requires_secondary: false
+
+  - id: knolles_simple_item
+    kind: item
+    primary: '^(?P<name>[A-Za-zÄÖÜäöü0-9][A-Za-zÄÖÜäöü0-9./\-,&\s]{0,29}?)\s{2,}(?P<total>-?\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+    requires_secondary: false
+
+pfand_patterns:
+  - id: knolles_pfand_unrabattable
+    kind: pfand_einweg
+    regex: '^Pfand\s+(?P<amount>\d+,\d{2})\*(?P<tax_class>[AB])\s*$'
+    attach_to: previous_item
+    flags: [not_rebate_eligible]
+
+date_extraction:
+  - description: "Trailer Datum/Uhrzeit/Filiale"
+    regex: '^(?P<date>\d{2}\.\d{2}\.\d{2})\s+(?P<time>\d{2}:\d{2})\s+(?P<store_id_inline>\d{7})'
+    date_format: "%d.%m.%y"
+    time_format: "%H:%M"
+
+store_extraction:
+  address_line:
+    regex: '^\s*(?P<street>Ohlendorfer\s+Str\.\s+\d+)\s*$'
+  city_line:
+    regex: '^\s*(?P<zip>\d{5})\s+(?P<city>[A-ZÄÖÜ][a-zäöüß]+)\s*$'
+  store_id:
+    regex: '^\d{2}\.\d{2}\.\d{2}\s+\d{2}:\d{2}\s+(?P<store_id>\d{7})'
+
+totals:
+  grand_total: '^SUMME\s+€\s+(?P<amount>\d+,\d{2})\s*$'
+  payment: '^(?P<method>Mastercard|Visa|EC-Cash|Bargeld|Maestro|Girocard)\s+€\s+(?P<amount>\d+,\d{2})\s*$'
+  item_count: '^Posten:\s+(?P<count>\d+)'
+
+tax_breakdown:
+  table_header: 'MwSt\s+NETTO\s+MwSt\s+UMSATZ'
+  row_regex: '^(?P<class>[AB])\s+(?P<rate>\d+)%\s+(?P<net>\d+,\d{2})\s+(?P<tax>\d+,\d{2})\s+(?P<gross>\d+,\d{2})\s*$'
+
+loyalty:
+  program: "PAYBACK"
+  earned_points: 'erhalten Sie\s+(?P<points>\d+)\s+°P'
+  eligible_amount: 'Für den Einkauf von\s+(?P<eligible_amount>\d+,\d{2})\s+EUR\s+auf\s+rabattf[äa]hige Artikel'
+  balance_points: 'Punktestand nach Einkauf:\s+(?P<points>[\d.]+)\s+°P'
+  balance_eur: 'Punktestand entspricht:\s+(?P<balance>\d+,\d{2})\s+EUR'

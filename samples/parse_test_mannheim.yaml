@@ -1,0 +1,56 @@
+test_id: dm_mannheim_2025_07_28
+sample: ../samples/2025-07-28-mannheim.txt
+profile: de.dm
+
+expected:
+  merchant:
+    identified: true
+    merchant_id: de.dm
+  store:
+    street: Friedrich-Ebert-Straße 100
+    zip: "68167"
+    city: Mannheim
+    store_id: "6482"
+  purchase_datetime:
+    date_only: "2025-07-28"
+    time_only: "10:07"
+  totals:
+    grand_total: "81.05"
+    computed_total: "81.05"
+    totals_match: true
+  payment:
+    method: VISA
+  tax_breakdown:
+    - class_code: "1"
+      rate: 0.19
+      gross: "75.10"
+    - class_code: "2"
+      rate: 0.07
+      gross: "5.95"
+  lines:
+    # Items mit Tax-Klasse 2 (Lebensmittel - FruchtBar Babybrei, Hipp etc.)
+    - parsed_name: FruchtBar 6M Erdbeer A
+      parsed_quantity: "2"
+      parsed_unit_price: "0.85"
+      parsed_total: "1.70"
+      parsed_tax_class: "2"
+      line_kind: item
+    - parsed_name: Hipp 8M Himbeer Reiswaffel 30g
+      parsed_total: "1.15"
+      parsed_tax_class: "2"
+      line_kind: item
+    # 3x-Inline-Quantity
+    - parsed_name: Balea MEN Duschgel Fre
+      parsed_quantity: "3"
+      parsed_unit_price: "0.55"
+      parsed_total: "1.65"
+      line_kind: item
+    # ob Tampons als Tax-Klasse 2 (interessant — Hygieneartikel werden seit 2020 als Grundbedarf besteuert)
+    - parsed_name: ob Tampons Comf. Super 16
+      parsed_total: "2.45"
+      parsed_tax_class: "2"
+      line_kind: item
+  loyalty:
+    program: PAYBACK
+    has_earned_points: true
+    earned_points: 40

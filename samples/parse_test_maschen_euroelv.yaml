@@ -1,0 +1,42 @@
+test_id: rewe_maschen_euroelv_2026_04_29
+sample: ../samples/2026-04-29-maschen-euroelv.txt
+profile: de.rewe
+
+expected:
+  merchant:
+    identified: true
+    merchant_id: de.rewe
+  store:
+    street: Schulstraße 46-48
+    zip: "21220"
+    city: Maschen
+    store_id: "0803"
+  purchase_datetime:
+    date_only: "2026-04-29"
+    time_only: "14:22:57"
+  totals:
+    grand_total: "42.44"
+    computed_total: "42.44"
+    totals_match: true
+  lines:
+    # Mengen-Item: 3 Stk ESL Milch
+    - parsed_name: ESL MILCH 3,5%
+      parsed_quantity: "3"
+      parsed_unit_price: "0.95"
+      parsed_total: "2.85"
+      line_kind: item
+      flags_contain: [quantity_multiline]
+    # Item mit führender Ziffer
+    - parsed_name: 9 BAG.BROETCHEN
+      parsed_total: "2.29"
+      line_kind: item
+    # Item mit Ampersand
+    - parsed_name: S&F ERDBEERE
+      parsed_total: "1.29"
+      line_kind: item
+    # Leergut-Rückgabe
+    - parsed_total: "-3.00"
+      parsed_tax_class: A
+      line_kind: pfand_return
+      parsed_quantity: "12"
+      parsed_unit_price: "0.25"

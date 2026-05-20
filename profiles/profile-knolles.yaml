@@ -1,0 +1,226 @@
+# merchants/de/knolles-markt/profile.yaml
+#
+# Knolles Markt OHG — Profil v1
+# Getestet gegen: Ohlendorfer Str. 3, 21220 Seevetal, Bon vom 09.05.2026
+# Layout-Variante: 2026-payback
+#
+# HINWEIS: Dies ist ein selbständiger Edeka-Markt. Edeka-Genossen haben pro Markt
+# leicht unterschiedliche Bon-Layouts. Bei systematisch wiederkehrenden Mustern
+# über mehrere Edeka-Märkte hinweg sollte ein gemeinsames 'de.edeka' Profil
+# extrahiert werden und 'de.knolles-markt' davon erben.
+#
+schema_version: 1
+
+merchant:
+  id: de.knolles-markt
+  name: Knolles Markt OHG
+  country: DE
+  parent_chain: de.edeka                    # Hinweis für Profil-Vererbung
+  brand_variants:
+    - "Knolles Markt OHG"
+    - "Knolles Markt"
+    - "Knolles"
+  
+  detection:
+    header_patterns:
+      - regex: '(?i)Knolles\s+Markt\s+OHG'
+        confidence: 1.0
+      - regex: '(?i)Ohlendorfer\s+Str\.?\s+3'
+        confidence: 0.85
+      - regex: '(?i)Tel\.\s+04185-2300'
+        confidence: 0.9
+      - regex: 'Steuernummer:\s+DE\s+165\s+769\s+372'
+        confidence: 1.0
+    minimum_score: 0.7
+
+tax_classes:
+  A:
+    rate: 0.07
+    description: "7% MwSt (Lebensmittel)"
+  B:
+    rate: 0.19
+    description: "19% MwSt (Standard)"
+
+layout:
+  sections:
+    - id: header
+      until_marker: '^\s+EUR\s*$'
+      contains: [merchant_name, address, phone]
+    - id: items
+      from_marker: '^\s+EUR\s*$'
+      until_marker: '^Posten:\s+\d+'
+      multiline: false   # Knolles nutzt einzeilige Items (siehe unten)
+    - id: totals
+      from_marker: '^Posten:\s+\d+'
+      until_marker: '^MwSt\s+'
+    - id: tax_breakdown
+      from_marker: '^MwSt\s+'
+      until_marker: '^PAYBACK|^0013'
+    - id: payback
+      from_marker: '^PAYBACK'
+      until_marker: '^0013'
+    - id: barcode
+      from_marker: '^0013'
+      until_marker: '^Es bediente Sie'
+    - id: cashier_meta
+      from_marker: '^Es bediente Sie'
+      until_marker: '^TSE'
+    - id: tse_block
+      from_marker: '^TSE'
+      until_marker: '$'
+  
+  item_layout:
+    # Knolles nutzt nur einzeilige Items, aber mit zwei Sub-Formaten:
+    
+    # Format A: Standard-Item ohne Multiplikation
+    # Beispiel: 'Coke Zero 1,25l                  1,59 B'
+    primary_pattern: |
+      ^(?P<name>[A-ZÄÖÜa-zäöü0-9][A-ZÄÖÜa-zäöü0-9./\-,&\s]{1,29}?)\s{2,}(?P<total>-?\d+,\d{2})\s+(?P<tax_class>[AB])\s*$
+    
+    multiline_patterns:
+      
+      # Format B: Mengen-Items mit inline-Multiplikation und Euro-Symbol
+      # Beispiel: 'G&G Multipack  2,55 € x  3    7,65 A'
+      - id: knolles_inline_quantity_eur
+        description: "Mengenartikel inline mit Euro-Symbol vor x"
+        primary: '^(?P<name>[A-ZÄÖÜa-zäöü0-9][A-ZÄÖÜa-zäöü0-9./\-,&\s]{1,20}?)\s+(?P<unit_price>\d+,\d{2})\s+€\s+x\s+(?P<qty>\d+)\s+(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+        result_kind: quantity_item
+        single_line: true
+  
+  pfand:
+    detection:
+      # Knolles markiert Pfand-Zeilen mit '*' direkt vor der Tax-Klasse
+      # Format: 'Pfand                  0,25*B'
+      # Das Sternchen signalisiert "nicht rabattberechtigt" (für PAYBACK)
+      - id: knolles_pfand_unrabattable
+        regex: '^Pfand\s+(?P<amount>\d+,\d{2})\*(?P<tax_class>[AB])\s*$'
+        kind: pfand_einweg
+        attach_to: previous_item
+        flags: [not_rebate_eligible]
+  
+  date_extraction:
+    patterns:
+      # Format: 'Datum Uhrzeit Filiale Pos Bed Bon'
+      #         '09.05.26 15:09 0213803 205 010 1738'
+      - description: "Trailer-Zeile mit Datum/Uhrzeit/Filiale"
+        regex: '^(?P<date>\d{2}\.\d{2}\.\d{2})\s+(?P<time>\d{2}:\d{2})\s+(?P<store_id>\d{7})'
+        date_format: "%d.%m.%y"
+        time_format: "%H:%M"
+        section: cashier_meta
+      
+      # Fallback: TSE-Timestamp
+      - description: "Fallback: TSE-Timestamp"
+        regex: '(?P<datetime>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)'
+        datetime_format: "%Y-%m-%dT%H:%M:%S.%fZ"
+        section: tse_block
+        timezone: "UTC"
+  
+  store_extraction:
+    patterns:
+      - description: "Strasse"
+        regex: '^Ohlendorfer\s+Str\.\s+(?P<street_no>\d+)'
+        position: header
+      - description: "PLZ + Ort"
+        regex: '^(?P<zip>\d{5})\s+(?P<city>\S[\S ]+?)\s*$'
+        position: header
+      - description: "Filial-ID aus Trailer"
+        regex: '^\d{2}\.\d{2}\.\d{2}\s+\d{2}:\d{2}\s+(?P<store_id>\d{7})'
+        section: cashier_meta
+    
+    cashier_extraction:
+      regex: '^\s*(?P<title>Frau|Herr)\s+(?P<name>\S[\S ]+?)\s*$'
+      section: cashier_meta
+      # WICHTIG: Namen werden bei Anonymisierungs-Helfer ENTFERNT vor Upload
+      # ins forager-merchants-Repo
+      anonymize_on_export: true
+  
+  totals:
+    grand_total:
+      regex: '^SUMME\s+€\s+(?P<amount>\d+,\d{2})\s*$'
+    
+    payment_method:
+      regex: '^(?P<method>Mastercard|Visa|EC-Cash|Bargeld|Maestro|Girocard)\s+€\s+(?P<amount>\d+,\d{2})\s*$'
+    
+    item_count:
+      regex: '^Posten:\s+(?P<count>\d+)'
+    
+    tax_breakdown:
+      # Format:
+      # 'MwSt          NETTO    MwSt    UMSATZ'
+      # 'A 7%           9,81    0,69    10,50'
+      # 'B 19%          3,09    0,59     3,68'
+      table_header: 'MwSt\s+NETTO\s+MwSt\s+UMSATZ'
+      row_regex: '^(?P<class>[AB])\s+(?P<rate>\d+)%\s+(?P<net>\d+,\d{2})\s+(?P<tax>\d+,\d{2})\s+(?P<gross>\d+,\d{2})\s*$'
+
+# PAYBACK-Integration
+loyalty:
+  program: "PAYBACK"
+  detection:
+    - regex: '^PAYBACK\s+-\s+\*+(?P<masked_card>\d{4})\s*$'
+      anonymize_field: masked_card   # die letzten 4 Stellen sind PII
+  
+  earned_points:
+    # Format:
+    # 'Für den Einkauf von 13,68 EUR auf'
+    # 'rabattfähige Artikel erhalten Sie 6 °P.'
+    eligible_amount_pattern: 'Für den Einkauf von\s+(?P<eligible_amount>\d+,\d{2})\s+EUR\s+auf\s+rabattf[äa]hige Artikel'
+    earned_pattern: 'erhalten Sie\s+(?P<points>\d+)\s+°P'
+    
+    # Format:
+    # '6 °P Basispunkte'
+    points_breakdown_pattern: '^(?P<points>\d+)\s+°P\s+(?P<bonus_kind>Basispunkte|eCoupon|Sonderaktion)\s*$'
+  
+  balance:
+    # 'Punktestand nach Einkauf: 1.328 °P'
+    # 'Punktestand entspricht: 13,28 EUR'
+    points_balance_pattern: 'Punktestand nach Einkauf:\s+(?P<points>[\d.]+)\s+°P'
+    cash_value_pattern: 'Punktestand entspricht:\s+(?P<cash_value>\d+,\d{2})\s+EUR'
+
+normalization:
+  max_name_length: 30
+  
+  abbreviations:
+    "G&G":          "Gut & Günstig"     # Edeka-Eigenmarke
+    "Mezzo Mix":    "Mezzo Mix"
+    "Coke Zero":    "Coca-Cola Zero"
+    "Fisherm.Friend": "Fisherman's Friend"
+    "Fisherm.Frien": "Fisherman's Friend"   # OCR-Variante (abgeschnittenes 'd')
+  
+  brand_hints:
+    "G&G":              "Gut & Günstig"
+    "Gut&Günstig":      "Gut & Günstig"
+    "Gut & Günstig":    "Gut & Günstig"
+    "EDEKA":            "Edeka"
+    "Coca-Cola":        "Coca-Cola"
+    "Coke":             "Coca-Cola"
+
+confidence_thresholds:
+  parse_min: 0.7
+  header_detection: 0.75
+  item_extraction: 0.75
+
+default_routing:
+  primary: grocy
+  hardware_signals: []    # Edeka-Markt → praktisch immer Food/Non-Food
+  override_per_line: true
+
+# Privacy-Hinweise für den Anonymisierungs-Helfer (Section 20.18)
+privacy:
+  fields_to_anonymize:
+    - cashier_name              # 'Frau Jürgens' → 'Frau ***'
+    - payback_masked_card       # '******1373' → entfernen vor Upload
+    - payback_customer_id       # 'Kunde - 630436172' → entfernen
+    - terminal_id               # Terminal-/Beleg-Nummern → können bleiben (nicht-PII)
+  
+  fields_to_keep:
+    - store_address             # Adresse ist öffentlich
+    - phone_number              # öffentliche Geschäftsnummer
+    - dates_and_times           # relevant für Layout-Erkennung
+    - tax_numbers               # öffentlich
+
+layout_signatures:
+  expected_markers:
+    - 'Knolles Markt OHG'
+    - 'PAYBACK\s+-\s+\*+\d{4}'
+    - 'TSE Transaktionsnummer:'
+  alternative_markers: []

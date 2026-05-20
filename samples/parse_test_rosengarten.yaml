@@ -1,0 +1,48 @@
+test_id: dm_rosengarten_2025_06_21
+sample: ../samples/2025-06-21-rosengarten.txt
+profile: de.dm
+
+expected:
+  merchant:
+    identified: true
+    merchant_id: de.dm
+  store:
+    street: Bremer Straße 51 a
+    zip: "21224"
+    city: Rosengarten
+    store_id: "1440"
+  purchase_datetime:
+    date_only: "2025-06-21"
+    time_only: "12:40"
+  totals:
+    grand_total: "58.05"
+    computed_total: "58.05"
+    totals_match: true
+  payment:
+    method: KARTENZAHLUNG
+  tax_breakdown:
+    - class_code: "1"
+      rate: 0.19
+      gross: "58.05"
+  lines:
+    # Inline-Quantity am Anfang
+    - parsed_name: Soft&Sicher Recyc.Tatü
+      parsed_quantity: "2"
+      parsed_unit_price: "0.95"
+      parsed_total: "1.90"
+      line_kind: item
+      flags_contain: [quantity_inline]
+    # Wort mit ß (war Bug-Trigger)
+    - parsed_name: Balea Fußmaske Socke Hornhaut
+      parsed_total: "3.95"
+      line_kind: item
+    # zweites Inline-Quantity
+    - parsed_name: SUNDANCE Kids Milch ME
+      parsed_quantity: "2"
+      parsed_unit_price: "5.95"
+      parsed_total: "11.90"
+      line_kind: item
+  loyalty:
+    program: PAYBACK
+    has_earned_points: true
+    earned_points: 29

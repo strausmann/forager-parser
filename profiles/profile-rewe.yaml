@@ -1,0 +1,232 @@
+# merchants/de/rewe/profile.yaml
+#
+# REWE Markt — Profil v1
+# Getestet gegen: Schulstraße 46-48, 21220 Maschen, Bon vom 20.05.2026
+# Layout-Variante: 2026-classic (Stand: 2026-05-20)
+#
+schema_version: 1
+
+merchant:
+  id: de.rewe
+  name: REWE
+  country: DE
+  brand_variants:
+    - "REWE"
+    - "REWE Markt"
+    - "REWE MARKT"
+    - "REWE Markt GmbH"
+
+  detection:
+    # Erkennungsmuster im OCR-Text — höchste Konfidenz zuerst
+    header_patterns:
+      - regex: '(?im)^\s*REWE\s+MARKT\s*$'
+        confidence: 0.9
+      - regex: '(?i)REWE\s+Markt\s+GmbH'
+        confidence: 1.0
+      - regex: '(?i)www\.rewe\.de'
+        confidence: 0.85
+      - regex: '(?i)UID\s*Nr\.?:\s*DE\d{9}'
+        confidence: 0.4   # UID-Format alleine reicht nicht
+    
+    # Optional: Logo-Hash für Bild-basierte Erkennung
+    logo_hashes:
+      - source: "samples/2026-classic.jpeg"
+        sha256: null   # später eintragen
+    
+    # Mindest-Score für Übernahme (Summe der Match-Konfidenzen)
+    minimum_score: 0.7
+
+# Steuerklassen — REWE-spezifisch
+# Wichtig: REWE nutzt nur 'B' im Beispiel-Bon, aber Mapping bleibt händlerweit.
+# Lebensmittel = 7% MwSt, Non-Food = 19% MwSt (deutsche Standardklassifikation)
+tax_classes:
+  A:
+    rate: 0.19
+    description: "19% MwSt (Standard, z.B. Non-Food)"
+  B:
+    rate: 0.07
+    description: "7% MwSt (Lebensmittel)"
+  # Hinweis: REWE kehrt die übliche Lidl/Edeka-Konvention um — bei Lidl ist A=7%, B=19%
+
+layout:
+  
+  # Bon-Sektionen
+  sections:
+    - id: header
+      until_marker: '^\s*EUR\s*$'
+      contains: [merchant_name, address, phone, uid]
+    - id: items
+      from_marker: '^\s*EUR\s*$'
+      until_marker: '^[-]{20,}\s*$'   # Trennlinie aus Bindestrichen
+      multiline: true
+    - id: totals
+      from_marker: '^[-]{20,}\s*$'
+      until_marker: '^\s*\*\s*\*\s*Kundenbeleg'
+    - id: payment_meta
+      from_marker: '^\s*\*\s*\*\s*Kundenbeleg'
+      until_marker: '^\s*Zahlung erfolgt'
+    - id: tax_breakdown
+      from_marker: '^\s*Steuer\s+%'
+      until_marker: '^\s*TSE-'
+    - id: bonus
+      from_marker: '^\s*Deine REWE Bonus-Vorteile'
+      until_marker: '^\s*REWE Markt GmbH'
+    - id: footer
+      from_marker: '^\s*REWE Markt GmbH'
+      until_marker: '$'
+  
+  item_layout:
+    # Primärmuster: einzeilige Items
+    # Format: <NAME (Großbuchstaben, evtl. mit Punkt/Slash/Leerzeichen)> <BETRAG> <TAX-Klasse>
+    primary_pattern: |
+      ^(?P<name>[A-ZÄÖÜ][A-ZÄÖÜ0-9./\-,\s!]{1,29}?)\s{2,}(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$
+    
+    multiline_patterns:
+      - id: rewe_weight_item
+        description: "Wiegeartikel: Name+Total+Tax in Zeile 1, kg-Detail in Zeile 2"
+        primary: '^(?P<name>[A-ZÄÖÜ][A-ZÄÖÜ0-9./\-,\s]{1,29}?)\s{2,}(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+        secondary: '^\s{4,}(?P<weight>\d+,\d{3})\s*kg\s*x\s+(?P<price_per_kg>\d+,\d{2})\s*EUR/kg\s*$'
+        result_kind: weight_item
+        total_in_line: primary   # Wichtig: Total steht schon in Zeile 1
+      
+      - id: rewe_quantity_item
+        description: "Mengenartikel: Name+Total+Tax in Zeile 1, Stk-Detail in Zeile 2"
+        primary: '^(?P<name>[A-ZÄÖÜ][A-ZÄÖÜ0-9./\-,\s%]{1,29}?)\s{2,}(?P<total>\d+,\d{2})\s+(?P<tax_class>[AB])\s*$'
+        secondary: '^\s+(?P<qty>\d+)\s+Stk\s+x\s+(?P<unit_price>\d+,\d{2})\s*$'
+        result_kind: quantity_item
+        total_in_line: primary
+  
+  # Pfand-Erkennung bei REWE
+  # Im Beispiel-Bon nicht enthalten, aber bekannt aus anderen REWE-Bons:
+  # COCA COLA 1,5L         1,99 B
+  #     PFAND EINWEG        0,25 B
+  pfand:
+    detection:
+      - regex: '^\s+PFAND\s+EINWEG\s+(?P<amount>\d+,\d{2})\s+[AB]\s*$'
+        kind: pfand_einweg
+        attach_to: previous_item
+      - regex: '^\s+PFAND\s+MEHRWEG\s+(?P<amount>\d+,\d{2})\s+[AB]\s*$'
+        kind: pfand_mehrweg
+        attach_to: previous_item
+  
+  # Datum/Uhrzeit-Extraktion (aus 'Kundenbeleg'-Block)
+  date_extraction:
+    patterns:
+      - description: "Im Kundenbeleg-Sektion: 'Datum: 20.05.2026' und 'Uhrzeit: 14:22:48 Uhr'"
+        date_regex: 'Datum:\s+(?P<date>\d{2}\.\d{2}\.\d{4})'
+        date_format: "%d.%m.%Y"
+        time_regex: 'Uhrzeit:\s+(?P<time>\d{2}:\d{2}:\d{2})'
+        time_format: "%H:%M:%S"
+        section: payment_meta
+      - description: "Fallback: TSE-Start als ISO"
+        date_regex: 'TSE-Start:\s+(?P<datetime>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})'
+        datetime_format: "%Y-%m-%dT%H:%M:%S"
+        section: tax_breakdown
+  
+  # Filial-Erkennung
+  store_extraction:
+    patterns:
+      - description: "Adresszeile direkt unter dem Logo"
+        regex: '^\s+(?P<address>\S[\S ]+?)\s*$'
+        position: header_line_2
+      - description: "Markt-/Kassen-Code im Footer"
+        regex: 'Markt:(?P<store_id>\d{4})\s+Kasse:(?P<till>\d+)\s+Bed\.:(?P<cashier>\d+)'
+        section: bonus
+  
+  totals:
+    grand_total:
+      regex: '^\s*SUMME\s+EUR\s+(?P<amount>\d+,\d{2})\s*$'
+    
+    tax_breakdown:
+      # REWE-Format: 'Steuer % Netto Steuer Brutto'
+      # Beispielzeile: ' B=  7,0%        30,69     2,15     32,84'
+      table_header: 'Steuer\s+%\s+Netto\s+Steuer\s+Brutto'
+      row_regex: '^\s+(?P<class>[AB])=\s+(?P<rate>\d+,\d+)%\s+(?P<net>\d+,\d{2})\s+(?P<tax>\d+,\d{2})\s+(?P<gross>\d+,\d{2})\s*$'
+      totals_row_regex: '^\s+Gesamtbetrag\s+(?P<net>\d+,\d{2})\s+(?P<tax>\d+,\d{2})\s+(?P<gross>\d+,\d{2})\s*$'
+  
+  payment:
+    method_regex: '^\s+Geg\.\s+(?P<method>Mastercard|Visa|EC-Cash|Bargeld|Maestro)\s+EUR\s+(?P<amount>\d+,\d{2})\s*$'
+    masked_card_regex: 'Nr\.\s+#+(?P<last4>\d{4})'
+
+# REWE Bonus-System (vergleichbar mit PAYBACK)
+loyalty:
+  program: "REWE Bonus"
+  detection:
+    - regex: 'Deine REWE Bonus-Vorteile heute'
+  
+  earned_coupons:
+    # Format im Bon:
+    # "Mit diesem Einkauf hast du 0,35 EUR REWE Bonus-Guthaben gesammelt"
+    earned_pattern: 'Mit diesem Einkauf hast du\s+(?P<amount>\d+,\d{2})\s+EUR\s+REWE Bonus-Guthaben'
+    
+    # Format:
+    # "0,35EUR auf Tulip Fl                0,35 EUR"
+    coupon_pattern: '^\s+(?P<value>\d+,\d{2})EUR\s+auf\s+(?P<target>.+?)\s+(?P<face_value>\d+,\d{2})\s+EUR\s*$'
+  
+  balance:
+    balance_pattern: 'Aktuelles Bonus-Guthaben:\s+(?P<balance>\d+,\d{2})\s+EUR'
+
+# Bon-spezifische Abkürzungen → kanonische Begriffe
+# Wird vom Alias-Normalizer (Section 20.12) genutzt
+normalization:
+  
+  # Tokenisierung-Hinweise: bei REWE ist Name max. 30 Zeichen, oft mit Punkt abgekürzt
+  max_name_length: 30
+  
+  abbreviations:
+    # Sortiert nach Länge absteigend für korrekten Replace-Match
+    "JOGH GRIECH.": "Joghurt griechische Art"
+    "FLEISCHKLOESSCHE": "Fleischklößchen"
+    "NATURJOGHURT 3,5": "Naturjoghurt 3,5%"
+    "STREICHGUT UNGES": "Streichgut ungesalzen"
+    "ESL MILCH": "ESL Milch"
+    "BIG CITY SALAMI": "Big City Salami"
+    "MINI SALAMI 4ER": "Mini Salami 4er"
+    "JA! GOUDA JUNG": "Ja! Gouda jung"
+    "DINKELSCHNITTE": "Dinkelschnitte"
+    "KAROTTE BIO": "Karotte Bio"
+    "SUPPENGRUEN": "Suppengrün"
+    "SALATGURKE": "Salatgurke"
+    "PAPRIKA GELB": "Paprika gelb"
+    "ERDBEERE": "Erdbeere"
+    "MUSCHELN": "Muscheln"
+    "HITSCHL.SCHNUERE": "Hitschler Schnüre"
+    # Generische REWE-Abkürzungen
+    "GR.": "groß"
+    "KL.": "klein"
+    "M.": "mit"
+    "O.": "ohne"
+    "BIO": "Bio"
+    "VB": "Vollbio"
+  
+  # Marken-Erkennung (für Alias-Suggestion)
+  brand_hints:
+    "JA!": "Ja!"          # REWE-Eigenmarke
+    "JA":  "Ja!"
+    "REWE BIO": "REWE Bio"
+    "REWE BESTE WAHL": "REWE Beste Wahl"
+
+confidence_thresholds:
+  parse_min: 0.7
+  header_detection: 0.7
+  item_extraction: 0.75
+
+# Default-Routing für Bons dieses Händlers
+default_routing:
+  primary: grocy
+  # REWE-Bons sind quasi immer Food → Snipe-IT-Signale praktisch nie
+  hardware_signals: []
+  override_per_line: true
+
+# Hinweise für Layout-Update-Detection
+layout_signatures:
+  # Wenn diese Strings im Bon auftauchen, sind wir bei dieser Layout-Version
+  expected_markers:
+    - '\* \* Kundenbeleg \* \*'
+    - 'TSE-Signaturzähler:'
+    - 'Deine REWE Bonus-Vorteile heute'
+  
+  # Wenn diese auftauchen, ist es ein anderes/älteres Layout
+  alternative_markers:
+    - '\*\*\* Kundenbeleg \*\*\*'    # alte Variante mit 3 Sternen
+    - 'REWE PAYBACK'                   # vor REWE-Bonus-Einführung

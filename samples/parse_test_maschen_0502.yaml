@@ -1,0 +1,48 @@
+test_id: rewe_maschen_2026_05_02
+sample: ../samples/2026-05-02-maschen.txt
+profile: de.rewe
+
+expected:
+  merchant:
+    identified: true
+    merchant_id: de.rewe
+  store:
+    street: Schulstraße 46-48
+    zip: "21220"
+    city: Maschen
+    store_id: "0803"
+  purchase_datetime:
+    date_only: "2026-05-02"
+    time_only: "11:33:46"
+  totals:
+    grand_total: "31.47"
+    computed_total: "31.47"
+    totals_match: true
+  lines:
+    - parsed_name: MINI SALAMI 4ER
+      parsed_total: "1.69"
+      line_kind: item
+    - parsed_name: ERDBEEREN
+      parsed_quantity: "0.472"
+      parsed_unit: kg
+      parsed_unit_price: "11.38"
+      parsed_total: "5.37"
+      line_kind: item
+      flags_contain: [weight_item]
+    - parsed_name: ESL MILCH 3,5%
+      parsed_quantity: "3"
+      parsed_unit_price: "0.95"
+      parsed_total: "2.85"
+      line_kind: item
+    - parsed_name: 9 BAG.BROETCHEN
+      parsed_total: "2.29"
+      line_kind: item
+    - parsed_name: KIDNEYBOHNEN
+      parsed_quantity: "2"
+      parsed_unit_price: "0.69"
+      parsed_total: "1.38"
+      line_kind: item
+    - parsed_name: JA! BACKPAPIERZ
+      parsed_total: "0.95"
+      parsed_tax_class: A
+      line_kind: item

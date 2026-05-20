@@ -1,0 +1,47 @@
+test_id: rewe_hamburg_ueberseequartier_2026_03_21
+sample: ../samples/2026-03-21-hamburg-ueberseequartier.txt
+profile: de.rewe
+
+expected:
+  merchant:
+    identified: true
+    merchant_id: de.rewe
+  store:
+    street: Überseeboulevard 7
+    zip: "20457"
+    city: Hamburg
+    uid_number: DE369701276
+    store_id: "7424"
+  purchase_datetime:
+    date_only: "2026-03-21"
+    time_only: "15:10:37"
+  totals:
+    grand_total: "60.99"
+    computed_total: "60.99"
+    totals_match: true
+  payment:
+    method: EC-Cash
+    amount: "60.99"
+  lines:
+    # Handeingabe-Wiegeartikel ohne EUR/kg-Detail
+    - parsed_name: HA-BRUSTFILET
+      parsed_quantity: "0.947"
+      parsed_unit: kg
+      parsed_total: "17.90"
+      parsed_tax_class: B
+      line_kind: item
+      flags_contain: [weight_item]
+    # Mengen-Item (3 Stk Markenbutter)
+    - parsed_name: JA! MARKENBUTTER
+      parsed_quantity: "3"
+      parsed_unit_price: "1.19"
+      parsed_total: "3.57"
+      line_kind: item
+      flags_contain: [quantity_multiline]
+    # Leergut-Rückgabe
+    - parsed_total: "-2.00"
+      parsed_tax_class: A
+      line_kind: pfand_return
+      parsed_quantity: "8"
+      parsed_unit_price: "0.25"
+      flags_contain: [not_rebate_eligible]
