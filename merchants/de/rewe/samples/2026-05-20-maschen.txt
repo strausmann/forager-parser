@@ -1,0 +1,90 @@
+                            REWE MARKT
+                        Schulstraße 46-48
+                          21220 Maschen
+                        0 41 05 / 15 56 08
+                       UID Nr.: DE812706034
+                                                            EUR
+MINI SALAMI 4ER                                            0,99 B
+JA! GOUDA JUNG                                             2,45 B
+DINKELSCHNITTE                                             1,99 B
+ERDBEERE                                                   2,73 B
+  0,490 kg x   5,58 EUR/kg
+KAROTTE BIO                                                2,99 B
+SUPPENGRUEN                                                1,99 B
+SALATGURKE                                                 0,65 B
+PAPRIKA GELB                                               3,16 B
+  0,528 kg x   5,99 EUR/kg
+STREICHGUT UNGES                                           1,05 B
+ESL MILCH 3,5%                                             1,90 B
+            2 Stk x    0,95
+NATURJOGHURT 3,5                                           0,89 B
+JOGH GRIECH. ART                                           2,29 B
+FLEISCHKLOESSCHE                                           3,19 B
+BIG CITY SALAMI                                            3,69 B
+MUSCHELN                                                   1,49 B
+HITSCHL.SCHNUERE                                           1,39 B
+ --------------------------------------
+ SUMME                                          EUR       32,84
+ ======================================
+ Geg. Mastercard                                EUR       32,84
+
+                        * * Kundenbeleg * *
+Datum:                                                  20.05.2026
+Uhrzeit:                                              14:22:48 Uhr
+Beleg-Nr.                                                     6665
+Trace-Nr.                                                   786512
+                        Bezahlung
+                        Contactless
+                        MASTERCARD
+Nr.                                          ############XXXX 0000
+VU-Nr.                                                  4556621971
+Terminal-ID                                               56003987
+Pos-Info                                                00 075 00
+AS-Zeit 20.05.                                       14:22 Uhr
+        AS-Proc-Code = 00 075 00
+        Capt.-Ref.= 0000
+                        APPROVED
+Betrag EUR                                                  32,84
+                        Zahlung erfolgt
+
+ Steuer  %             Netto       Steuer       Brutto
+ B=  7,0%              30,69        2,15         32,84
+ Gesamtbetrag          30,69        2,15         32,84
+
+TSE-Signatur: T16rPT++mSd2OCdTOj0pEhUoqQZ99IMx5
+              YWvvD4tIAOF9RH0JC/jwKLchcPO9jmijE
+              y7LlrmAlxqhQaT7szWATaFLvhYXG7GqNi
+              A4JPogwjJOHQ03hAPuGyFv53wQk+B
+ TSE-Signaturzähler:  293076
+ TSE-Transaktion:  143062
+ TSE-Start:  2026-05-20T14:21:34.000
+ TSE-Stop:  2026-05-20T14:22:40.000
+ Seriennnummer Kasse: REWE:b4:2e:99:74:ab:72:00
+ 20.05.2026 14:22 Bon-Nr.:5142
+ Markt:0803 Kasse:3 Bed.:616161
+
+ ****************************************
+ Deine REWE Bonus-Vorteile heute
+
+ Mit diesem Einkauf hast du 0,35 EUR
+ REWE Bonus-Guthaben gesammelt:
+ Bonus-Coupon(s)
+ 0,35EUR auf Tulip Fl                                       0,35 EUR
+Aktuelles Bonus-Guthaben:                                  36,95 EUR
+Einfach beim nächsten Einkauf einlösen!
+
+ Sammle noch mehr REWE Bonus-Guthaben
+ mit Coupons und weiteren Vorteilen
+ - gleich in der REWE App aktivieren!
+
+ Keine Rabatte oder Bonus-Guthaben
+ auf mit * gekennzeichnete Produkte
+
+ ****************************************
+
+ REWE Markt GmbH
+
+ Vielen Dank für Ihren Einkauf
+ Bitte beachten Sie unsere kunden-
+ Sie haben Fragen?
+ Antworten gibt es unter www.rewe.de

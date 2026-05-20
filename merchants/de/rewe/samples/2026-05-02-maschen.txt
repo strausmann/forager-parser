@@ -1,0 +1,82 @@
+                            REWE MARKT
+                        Schulstraße 46-48
+                          21220 Maschen
+                        0 41 05 / 15 56 08
+                       UID Nr.: DE812706034
+                                                            EUR
+MINI SALAMI 4ER                                           1,69 B
+HEFEWUERFEL                                               0,15 B
+APFEL CRIPPSPINK                                          3,39 B
+ERDBEEREN                                                 5,37 B
+   0,472 kg x  11,38 EUR/kg
+ESL MILCH 3,5%                                            2,85 B
+             3 Stk x    0,95
+FRISCHER KAKAO                                            2,19 B
+9 BAG.BROETCHEN                                           2,29 B
+THYMIAN GEREBELT                                          2,29 B
+HELA GEWK.SCHARF                                          3,39 B
+MIRACEL WHIP                                              2,65 B
+JA! MAIS                                                  0,89 B
+KIDNEYBOHNEN                                              1,38 B
+             2 Stk x    0,69
+NIMM2 SOFT                                                1,99 B
+JA! BACKPAPIERZ                                           0,95 A
+ --------------------------------------
+ SUMME                                          EUR       31,47
+ ======================================
+ Geg. EC-Cash                                   EUR       31,47
+
+ * * Kundenbeleg * * 
+Datum:                                                  02.05.2026
+Uhrzeit:                                              11:33:46 Uhr
+Beleg-Nr.                                                     2838
+Trace-Nr.                                                   782386
+                        Kartenzahlung
+                        Contactless
+                        girocard
+Nr.                                          ############XXXX 0000
+Terminal-ID                                               56003987
+Pos-Info                                                00 075 00
+AS-Zeit 02.05.                                       11:33 Uhr
+Betrag EUR                                                  31,47
+                        Zahlung erfolgt
+
+ Steuer  %             Netto       Steuer       Brutto
+ A= 19,0%               0,80        0,15         0,95
+ B=  7,0%              28,52        2,00        30,52
+ Gesamtbetrag          29,32        2,15        31,47
+
+TSE-Signatur: ZD+rr3gBHPiaYopbLQ2NMSAfw7kEqJndd
+              cefPsQSG1TiqAv81D258f1xp2fCmTeWSF
+              wNDveseQ/8pccaV7Uotp3pC2XYqs7pEVs
+              jRIuKaoqHxF/y2uNQBBk4V0viTWst
+ TSE-Signaturzähler:  234289 
+ TSE-Transaktion:  114396 
+ TSE-Start:  2026-05-02T11:32:31.000 
+ TSE-Stop:  2026-05-02T11:33:30.000 
+ Seriennnummer Kasse: REWE:b4:2e:99:74:ab:72:00
+ 02.05.2026 11:33 Bon-Nr.:8383
+ Markt:0803 Kasse:3 Bed.:151515
+
+ ****************************************
+Entdecke und aktiviere alle REWE Bonus-
+ Vorteile jetzt in der REWE App!
+
+ Aktuelles Bonus-Guthaben:                                34,27 EUR
+Einfach beim nächsten Einkauf einlösen!
+
+ Sammle noch mehr REWE Bonus-Guthaben
+ mit Coupons und weiteren Vorteilen
+ - gleich in der REWE App aktivieren!
+
+ Keine Rabatte oder Bonus-Guthaben
+ auf mit * gekennzeichnete Produkte
+
+ ****************************************
+
+ REWE Markt GmbH
+
+ Vielen Dank für Ihren Einkauf
+ Bitte beachten Sie unsere kunden-
+ Sie haben Fragen?
+ Antworten gibt es unter www.rewe.de

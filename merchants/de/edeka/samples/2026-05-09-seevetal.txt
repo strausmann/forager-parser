@@ -1,0 +1,64 @@
+                       Knolles Markt OHG
+                       Ohlendorfer Str. 3
+                          21220 Seevetal
+                         Tel. 04185-2300
+                                                      EUR
+Coke Zero 1,25l                                      1,59 B
+Pfand                                                0,25*B
+Mezzo Mix 1,25l                                      1,59 B
+Pfand                                                0,25*B
+G&G Multipack       2,55 € x   3                     7,65 A
+Fisherm.Friend      0,95 € x   3                     2,85 A
+Posten: 10                                       ----------
+SUMME                       €                       14,18
+Mastercard                  €                       14,18
+
+MwSt           NETTO       MwSt        UMSATZ
+A 7%            9,81       0,69         10,50
+B 19%           3,09       0,59          3,68
+
+PAYBACK - ******XXXX
+
+Kunde - <CUSTOMER_ID>
+
+   Für den Einkauf von 13,68 EUR auf
+ rabattfähige Artikel erhalten Sie 6 °P.
+
+6 °P Basispunkte
+
+   Punktestand nach Einkauf: 1.328 °P
+   Punktestand entspricht: 13,28 EUR
+
+ Die Gewährung der PAYBACK Punkte kann
+  Entgeldminderungen zur Folge haben.
+* Position nicht rabattberechtigt
+
+       ||||||| ||| | ||| ||| || ||| |||||
+       0013803090526205001738
+
+    Es bediente Sie:
+       <NAME>
+
+Datum Uhrzeit Filiale     Pos Bed Bon
+09.05.26 15:09 0213803    205 010 1738
+
+
+       Steuernummer: DE 165 769 372
+
+TSE Transaktionsnummer: 440872
+TSE Seriennummer: 4909AB318C282BBF8F4D70
+B0E2A458359C98F0D109CEB3E564C90841FF30EC
+6A
+Seriennr. Kasse: NO-213803-4POS05
+Prüfwert: 1S3iTLzkBGP9kGaN/TY0gorotGv1vM
+mBsIsJqI8vn+YloG4HXIwjhzVMC6b6KQehfksr4S
+xJMskCOHJuUxOqHSaTf3jcXNqLm2FwAu9RP/zoa0
+bEOmRN7z7d+bwVtqyS
+Signaturzähler: 883063
+2026-05-09T13:09:26.000Z2026-05-09T13:10
+:16.000Z
+       Vielen Dank für Ihren Einkauf
+              Öffnungszeiten
+          MO - FR 7:30 - 19:30 Uhr
+          SA      7:30 - 15:30 Uhr
+       Öko-zertifiziert nach DE - ÖKO - 034

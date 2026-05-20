@@ -1,0 +1,68 @@
+                                        dm-drogerie markt
+                                        Bremer Straße 51 a
+                                        21224 Rosengarten
+                                        04108/4161355
+
+
+21.06.2025  12:40  D3DA/1  283804/1   1440
+
+2x 0,95 Soft&Sicher Recyc.Tatü      1,90  1
+Frosch Spülmaschinen-Tabs 70St      9,45  1
+Frosch Color-Waschpul Granatap      4,95  1
+Lenor WSP Orchidee&Vanille          2,75  1
+tetesept Kids T-Rex-World           3,95  1
+Balea Fußmaske Socke Hornhaut       3,95  1
+2x 5,95 SUNDANCE Kids Milch ME     11,90  1
+alverde Lippenpflegestift sens      2,75  1
+SUNDANCE Sonnencr-Gel Sport         3,95  1
+SUNDANCE Sonnenmilch LSF 50         7,95  1
+SUNDANCE Matt Fluid LSF30 50ml      3,25  1
+2x 0,65 Balea Sh Seidenglanz 3      1,30  1
+SUMME EUR                          58,05
+KARTENZAHLUNG EUR                 -58,05
+
+MwSt-Satz           Brutto        Netto       MwSt
+1=19,00%             58,05        48,78       9,27
+******************************************
+ Deine PAYBACK Kartennr.: XXXXXXXXX<CUSTOMER_ID>
+ Punktestand vor Einkauf: 966
+ Dieser Punktestand entspricht: 9,66 EUR
+ Für diesen Einkauf erhältst Du von dm
+PAYBACK Punkte auf punktefähige Artikel
+Basis-Punkte                          29°P
+Dies entspricht 0,29 EUR.
+******************************************
+ Öffnungszeiten auf dm.de
+ Steuer-Nr.:34092/30007
+
+******* FISKALINFORMATIONEN (TSE) *******
+Start:                  2025-06-21 12:40:40
+Ende:                   2025-06-21 12:41:23
+SN-Kasse: FD205011    TA-Nummer: 371052
+SN-TSE: b07fb6f1a6174710d5e4cd8901488d5f19
+16cfb72841cf4b8433e83f62897df5
+Signaturzähler: 742075   Signatur: O8SK8dGR
+nbtiBbnDnM+1e3adWQTyHDyFQG2DdoRt8A1GXBNS0T
+MrPhj/yQFJsOks28gKRFSoSaPmaFOTRkaSPw==
+
+
+           -K-U-N-D-E-N-B-E-L-E-G-
+
+
+Terminal-ID :                       69724308
+TA-Nr 192022                        BNr 1384
+
+            Kartenzahlung
+            kontaktlos
+            girocard
+
+EUR 58,05
+
+PAN  ############################XXXX
+Karte 0       gültig bis    ##/##
+EMV-AID            A0000003591010028001
+Genehmigungs-Nr                       241914
+Datum  21.06.25                  12:41 Uhr
+
+         *** Zahlung erfolgt ***
+        BITTE BELEG AUFBEWAHREN

@@ -1,0 +1,93 @@
+ REWE Jens Piclum oHG 
+ Westfield Hamburg - Überseequartier 
+ Überseeboulevard 7 
+ 20457 Hamburg 
+ UID Nr.: DE369701276 
+ EUR
+HA-BRUSTFILET                                            17,90 B
+     Handeingabe E-Bon         0,947 kg
+GEFLUEGELFL.WURS                                          2,99 B
+SALAMI HAUCHFEIN                                          1,99 B
+HAEHNCHENBR GEBR                                          2,29 B
+GOUDA SCHEIBEN                                            2,39 B
+BUKO DER SAHNIGE                                          1,99 B
+CROISSANTS                                                1,59 B
+BANANE CHIQUITA                                           2,05 B
+   0,824 kg x   2,49 EUR/kg
+APFEL PINK LADY                                           1,55 B
+   0,678 kg x   2,29 EUR/kg
+KART.VORW.FESTK.                                          1,59 B
+BLUMENKOHL WEISS                                          2,99 B
+SALATGURKE                                                0,79 B
+EIER FH WEISS                                             3,29 B
+JA! MARKENBUTTER                                          3,57 B
+             3 Stk x    1,19
+ESL MILCH 3,5%                                            1,90 B
+             2 Stk x    0,95
+FRISCHER KAKAO                                            2,19 B
+SCHLAGSAHNE                                               2,89 B
+CREME FRAICHE                                             1,98 B
+             2 Stk x    0,99
+SAUCE HOLL.                                               2,78 B
+             2 Stk x    1,39
+HIMB.PASSIONSFR.                                          1,99 B
+GRIECH. APRIKOSE                                          2,29 B
+LEERGUT EINWEG                                           -2,00 A *
+             8 Stk x    0,25
+ --------------------------------------
+ SUMME                                          EUR       60,99
+ ======================================
+ Geg. EC-Cash                                   EUR       60,99
+ 
+ * * Kundenbeleg * * 
+Datum:                                                  21.03.2026
+Uhrzeit:                                              15:10:37 Uhr
+Beleg-Nr.                                                     0811
+Trace-Nr.                                                   056153
+                        Kartenzahlung
+                        Contactless
+                        girocard
+Nr.                                          ############XXXX 0000
+Terminal-ID                                               56055798
+Pos-Info                                                00 075 00
+AS-Zeit 21.03.                                       15:10 Uhr
+Betrag EUR                                                  60,99
+                        Zahlung erfolgt
+ 
+ Steuer  %             Netto       Steuer       Brutto
+ A= 19,0%              -1,68       -0,32        -2,00
+ B=  7,0%              58,87        4,12        62,99
+ Gesamtbetrag          57,19        3,80        60,99
+ 
+TSE-Signatur: V4mqB2owv8U0mWsILs8QQhBm4bJaqcQ/P
+              EVexujyzeRHKcr46a8UrWDDgmKtXULJbG
+              oiL0e//XrINwhn4ZzpwbnYCVfZBHhOcvo
+              XrgzKfcaYu/e/UtzHMjemkZz4BtAB 
+ TSE-Signaturzähler:  169544 
+ TSE-Transaktion:  83497 
+ TSE-Start:  2026-03-21T15:10:37.000 
+ TSE-Stop:  2026-03-21T15:13:54.000 
+ Seriennnummer Kasse: REWE:74:56:3c:ef:50:71:00
+ 21.03.2026 15:13 Bon-Nr.:4085
+ Markt:7424 Kasse:6 Bed.:432106
+
+ ****************************************
+ Deine REWE Bonus-Vorteile heute
+
+ Mit diesem Einkauf hast du 0,23 EUR
+ REWE Bonus-Guthaben gesammelt:
+ Bonus-Coupon(s)
+ 10% auf Fruechte- &                                       0,23 EUR
+Aktuelles Bonus-Guthaben:                                 26,70 EUR
+Einfach beim nächsten Einkauf einlösen!
+
+ Sammle noch mehr REWE Bonus-Guthaben
+ mit Coupons und weiteren Vorteilen
+ - gleich in der REWE App aktivieren!
+
+ Keine Rabatte oder Bonus-Guthaben
+ auf mit * gekennzeichnete Produkte
+
+ ****************************************
+
+ www.rewe.de

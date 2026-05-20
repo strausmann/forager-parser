@@ -1,0 +1,79 @@
+                                        dm-drogerie markt
+                                        Im Fischbeker Heidbrook 2c
+                                        21149 Hamburg
+                                        040/999967500
+
+
+25.01.2025  10:28  D4C7/1  237538/8   7422
+
+Saugstark&Si KüchentüDesign3lg     3,45  1
+Soft&Sicher TatüboxDesign100Bl     0,95  1
+S&S Toipa Classic XXL              7,55  1
+Frosch Spülmaschinen-Tabs 70St     9,45  1
+Frosch Color-Waschpul Granatap     4,75  1
+babylove Feuchtt.sens. 2x80St      1,95  1
+CRAZE Inkee BadebombePawPatrol     3,95  1
+Vöslauer Limo. Oran.+0,25Pfand     1,15  1
+Einwegpfand                        0,25 §1
+Vöslauer Limo Himb.+0,25€Pfand     1,15  1
+Einwegpfand                        0,25 §1
+Odol-med3 Milchzahn ZC 50ml        1,95  1
+2x 2,25 Signal ZB Kinder ultra     4,50  1
+ebelin Wattestäbchen NF            0,45  1
+NIVEA MEN Duschgel Sport 500ml     3,15  1
+2x 0,85 Balea Cremeseife Himbe     1,70  1
+Schauma Shampoo Frucht&Vitamin     1,45  1
+Bio-Tasche Baumwolle Pfand         2,00 §1
+Zwischensumme                     50,05
+dm-Rabatte auf rabattfähige Artikel
+Coupon 10%                        -4,76
+SUMME EUR                         45,29
+KARTENZAHLUNG EUR                -45,29
+
+MwSt-Satz          Brutto        Netto       MwSt
+1=19,00%            45,29        38,06       7,23
+§: Für diese Artikel werden keine Rabatte
+vergeben
+******************************************
+ Deine PAYBACK Kartennr.: XXXXXXXXX<CUSTOMER_ID>
+ Punktestand vor Einkauf: 582
+ Dieser Punktestand entspricht: 5,82 EUR
+ Für diesen Einkauf erhältst Du von dm
+PAYBACK Punkte auf punktefähige Artikel
+Basis-Punkte                          21°P
+Dies entspricht 0,21 EUR.
+******************************************
+ Öffnungszeiten auf dm.de
+ Steuer-Nr.:34092/30007
+
+******* FISKALINFORMATIONEN (TSE) *******
+Start:                  2025-01-25 10:28:56
+Ende:                   2025-01-25 10:30:09
+SN-Kasse: FD259911    TA-Nummer: 61616
+SN-TSE: a5ebb8c0c6d71eaed704d3d1e13b06895a
+8165e85aba58d3216fa0f6afb675e1
+Signaturzähler: 123576   Signatur: 9hY7VZxC
+k+YLg3/V34i8zFvPiBG1H1vy2l0d4CjV6D3nXqB8tj
+yqDJKIHig2tF9CEU2friCeoNqLHGMHO5tA3Q==
+
+
+           -K-U-N-D-E-N-B-E-L-E-G-
+
+
+Terminal-ID :                       69727226
+TA-Nr 010399                        BNr 3601
+
+            Kartenzahlung
+            kontaktlos
+            girocard
+
+EUR 45,29
+
+PAN  ############################XXXX
+Karte 0       gültig bis    ##/##
+EMV-AID            A0000003591010028001
+Genehmigungs-Nr                       390503
+Datum  25.01.25                  10:30 Uhr
+
+         *** Zahlung erfolgt ***
+        BITTE BELEG AUFBEWAHREN

@@ -1,0 +1,83 @@
+                                        dm-drogerie markt
+                                        Friedrich-Ebert-Straße 100
+                                        68167 Mannheim
+                                        0621/1789260
+
+
+28.07.2025  10:07  D1EH/4  000102/5   6482
+
+Saugstark&Sicher 4x64Bl             2,75  1
+Frosch Spülmaschinen-Tabs 70St      9,45  1
+Sagrotan WC-Reiniger Atlantikf      3,75  1
+Persil Colorwaschmi Discs 50WL     13,95  1
+Denkmit Reise- und Fleckentube      1,35  1
+2x 0,85 FruchtBar 6M Erdbeer A      1,70  2
+Hipp 8M Himbeer Reiswaffel 30g      1,15  2
+Hipp 1J Müsli Freund Butterkek      0,65  2
+babylove Feuchtt.sens. 2x80St       1,95  1
+Balea Leichtkämmspray H.Berry       1,45  1
+2x 6,95 Meridol ZC ParodontExp     13,90  1
+Listerine MS Total Care Zahn        4,45  1
+Garn. Hydra BombTuchmaske blau      1,65  1
+Vaseline Lippenpfl.Lip Origina      3,45  1
+Balea Anti-WundreibstickSummer      4,95  1
+3x 0,55 Balea MEN Duschgel Fre      1,65  1
+2x 3,95 Nivea Men Deo Spr.XXL       7,90  1
+Balea MenDeo Roll-On Sens.50ml      0,60  1
+2x 0,85 Balea Cremeseife Himbe      1,70  1
+ob Tampons Comf. Super 16           2,45  2
+Papiertragetasche                   0,20  1
+SUMME EUR                          81,05
+VISA EUR                          -81,05
+
+MwSt-Satz           Brutto        Netto       MwSt
+1=19,00%             75,10        63,11      11,99
+2=7,00%               5,95         5,56       0,39
+******************************************
+ Deine PAYBACK Kartennr.: XXXXXXXXX<CUSTOMER_ID>
+ Punktestand vor Einkauf: 1.020
+ Dieser Punktestand entspricht: 10,20 EUR
+ Für diesen Einkauf erhältst Du von dm
+PAYBACK Punkte auf punktefähige Artikel
+Basis-Punkte                          40°P
+Dies entspricht 0,40 EUR.
+******************************************
+ Öffnungszeiten auf dm.de
+ Steuer-Nr.:34092/30007
+
+******* FISKALINFORMATIONEN (TSE) *******
+Start:                  2025-07-28 10:07:07
+Ende:                   2025-07-28 10:10:25
+SN-Kasse: FD092914    TA-Nummer: 136124
+SN-TSE: 890c0279213496157d8bedc7a4aa4c76d8
+a3f2a6e5a4a6ba4895c1b1235c4349
+Signaturzähler: 272231   Signatur: IlrlGAYy
+/mr0OlOedx5WfYGv1hnNzRgt5jDFmGoniazxSOboxe
+jWQp3z8R6fx89BxHGeBExd5pg/7fPkT3iMkQ==
+
+* * Kundenbeleg * *
+
+Datum:                                28.07.2025
+Uhrzeit:                          10:10:14 Uhr
+Beleg-Nr.                                  7505
+Trace-Nr.                                138326
+
+Bezahlung
+Contactless
+Visa Credit
+
+Nr.                       ############XXXX 0000
+VU-Nr.                                4556258672
+Genehmigungs-Nr.                          776951
+Terminal-ID                             69719129
+Pos-Info                                00 075 00
+AS-Zeit 28.07.                       10:10 Uhr
+
+AS-Proc-Code=00 075 00
+Capt.-Ref.=5162
+AS-RC=00
+APPROVED
+
+Betrag EUR                                81,05
+Genehmigung erteilt
+Bitte Beleg aufbewahren
