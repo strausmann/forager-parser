@@ -43,8 +43,9 @@ jobs:
       - name: Scan for full credit-card-like patterns
         run: |
           set -e
-          # 16 consecutive digits — likely an unredacted card number
-          if grep -rEn '[0-9]{16}' merchants/*/*/samples/ 2>/dev/null; then
+          # Exactly 16 consecutive digits (word-boundary) — likely an unredacted card number.
+          # Longer runs (EMV-AID, SEPA M-ID, TSE-SN) are excluded via \b.
+          if grep -rEn '\b[0-9]{16}\b' merchants/*/*/samples/ 2>/dev/null; then
             echo "::error::Found 16-digit pattern in samples. Anonymize with ############XXXX."
             exit 1
           fi
